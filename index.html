@@ -1,1026 +1,344 @@
-		<!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Gestão de Treinamentos — RH</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --navy: #0D1B3E;
-    --navy-mid: #1A2F5A;
-    --navy-light: #243d73;
-    --teal: #0C7B7B;
-    --teal-br: #12A3A3;
-    --teal-lt: #D4F1F1;
-    --green: #166534;
-    --green-lt: #DCFCE7;
-    --green-br: #22C55E;
-    --amber: #92400E;
-    --amber-lt: #FEF3C7;
-    --amber-br: #F59E0B;
-    --red: #991B1B;
-    --red-lt: #FEE2E2;
-    --red-br: #EF4444;
-    --white: #FFFFFF;
-    --off: #F0F4F8;
-    --border: #E2E8F0;
-    --text: #1E293B;
-    --muted: #64748B;
-    --card: #FFFFFF;
-    --sidebar-w: 260px;
-  }
-
-- { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-font-family: ‘DM Sans’, sans-serif;
-background: var(–off);
-color: var(–text);
-min-height: 100vh;
-display: flex;
+:root {
+  --navy: #0D1B3E;
+  --navy-mid: #1A2F5A;
+  --teal: #0C7B7B;
+  --teal-br: #12A3A3;
+  --teal-lt: #D4F1F1;
+  --green: #166534;
+  --green-lt: #DCFCE7;
+  --green-br: #22C55E;
+  --amber: #92400E;
+  --amber-lt: #FEF3C7;
+  --amber-br: #F59E0B;
+  --red: #991B1B;
+  --red-lt: #FEE2E2;
+  --red-br: #EF4444;
+  --white: #FFFFFF;
+  --off: #F0F4F8;
+  --border: #E2E8F0;
+  --text: #1E293B;
+  --muted: #64748B;
+  --sidebar-w: 240px;
+  --bottomnav-h: 64px;
 }
-
-/* ── SIDEBAR ── */
-.sidebar {
-width: var(–sidebar-w);
-background: var(–navy);
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-position: fixed;
-top: 0; left: 0;
-z-index: 100;
-box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; overflow-x:hidden; }
+body { font-family:'DM Sans',sans-serif; background:var(--off); color:var(--text); display:flex; flex-direction:column; }
+@media(min-width:900px){
+  body { flex-direction:row; }
+  .sidebar { width:var(--sidebar-w); background:var(--navy); min-height:100vh; display:flex; flex-direction:column; position:fixed; top:0; left:0; z-index:100; box-shadow:4px 0 24px rgba(0,0,0,0.18); }
+  .bottom-nav { display:none!important; }
+  .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+  .topbar { position:sticky; top:0; }
+  .content { padding:28px 32px; }
+  .stats-grid { grid-template-columns:repeat(4,1fr); }
+  .seg-grid { grid-template-columns:repeat(4,1fr)!important; }
+  .form-row-2 { grid-template-columns:1fr 1fr; }
+  .modal { width:560px; }
+  table { display:table; }
+  .card-list { display:none; }
+  .toast-container { bottom:24px; right:24px; }
 }
-
-.sidebar-logo {
-padding: 28px 24px 20px;
-border-bottom: 1px solid rgba(255,255,255,0.08);
+@media(max-width:899px){
+  .sidebar { display:none!important; }
+  .main { flex:1; display:flex; flex-direction:column; padding-bottom:var(--bottomnav-h); }
+  .content { padding:14px; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+  .seg-grid { grid-template-columns:repeat(2,1fr)!important; }
+  .form-row-2 { grid-template-columns:1fr; }
+  .modal { width:96vw; padding:18px; }
+  .topbar { padding:12px 14px; }
+  .topbar-title { font-size:17px; }
+  .btn-hide-mobile { display:none; }
+  table { display:none; }
+  .card-list { display:flex; flex-direction:column; gap:10px; }
+  .search-box input { width:130px; }
+  .toast-container { bottom:76px; right:12px; }
 }
-.sidebar-logo h1 {
-font-family: ‘Syne’, sans-serif;
-font-size: 17px;
-font-weight: 800;
-color: var(–white);
-line-height: 1.2;
-letter-spacing: -0.3px;
-}
-.sidebar-logo span {
-font-size: 11px;
-color: var(–teal-br);
-font-weight: 500;
-letter-spacing: 1.5px;
-text-transform: uppercase;
-display: block;
-margin-top: 4px;
-}
-
-.sidebar-nav { padding: 16px 12px; flex: 1; }
-.nav-label {
-font-size: 10px;
-font-weight: 600;
-letter-spacing: 1.8px;
-text-transform: uppercase;
-color: rgba(255,255,255,0.3);
-padding: 0 12px;
-margin: 16px 0 6px;
-}
-.nav-item {
-display: flex;
-align-items: center;
-gap: 10px;
-padding: 10px 12px;
-border-radius: 8px;
-cursor: pointer;
-color: rgba(255,255,255,0.65);
-font-size: 14px;
-font-weight: 500;
-transition: all 0.18s;
-margin-bottom: 2px;
-border: none;
-background: none;
-width: 100%;
-text-align: left;
-}
-.nav-item:hover { background: rgba(255,255,255,0.07); color: var(–white); }
-.nav-item.active { background: var(–teal); color: var(–white); }
-.nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-.nav-badge {
-margin-left: auto;
-background: var(–red-br);
-color: white;
-font-size: 10px;
-font-weight: 700;
-padding: 1px 7px;
-border-radius: 20px;
-min-width: 20px;
-text-align: center;
-}
-
-.sidebar-footer {
-padding: 16px;
-border-top: 1px solid rgba(255,255,255,0.08);
-font-size: 11px;
-color: rgba(255,255,255,0.3);
-text-align: center;
-}
-
-/* ── MAIN ── */
-.main {
-margin-left: var(–sidebar-w);
-flex: 1;
-display: flex;
-flex-direction: column;
-min-height: 100vh;
-}
-
-.topbar {
-background: var(–white);
-border-bottom: 1px solid var(–border);
-padding: 16px 32px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-position: sticky;
-top: 0;
-z-index: 50;
-}
-.topbar-title {
-font-family: ‘Syne’, sans-serif;
-font-size: 20px;
-font-weight: 700;
-color: var(–navy);
-}
-.topbar-sub { font-size: 13px; color: var(–muted); margin-top: 1px; }
-.topbar-actions { display: flex; gap: 10px; align-items: center; }
-
-.btn {
-display: inline-flex;
-align-items: center;
-gap: 7px;
-padding: 9px 18px;
-border-radius: 8px;
-font-size: 13.5px;
-font-weight: 600;
-cursor: pointer;
-border: none;
-transition: all 0.18s;
-font-family: ‘DM Sans’, sans-serif;
-}
-.btn-primary { background: var(–teal); color: white; }
-.btn-primary:hover { background: var(–teal-br); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(12,123,123,0.35); }
-.btn-outline { background: transparent; color: var(–navy); border: 1.5px solid var(–border); }
-.btn-outline:hover { border-color: var(–teal); color: var(–teal); background: var(–teal-lt); }
-.btn-danger { background: var(–red-br); color: white; }
-.btn-danger:hover { background: var(–red); }
-.btn-sm { padding: 6px 13px; font-size: 12.5px; }
-.btn-icon { padding: 8px; border-radius: 7px; }
-
-/* ── CONTENT ── */
-.content { padding: 28px 32px; flex: 1; }
-
-/* ── VIEWS ── */
-.view { display: none; }
-.view.active { display: block; }
-
-/* ── STATS ROW ── */
-.stats-grid {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 16px;
-margin-bottom: 24px;
-}
-.stat-card {
-background: var(–card);
-border-radius: 12px;
-padding: 20px;
-border: 1px solid var(–border);
-box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-position: relative;
-overflow: hidden;
-}
-.stat-card::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 0; right: 0;
-height: 3px;
-}
-.stat-card.total::before { background: var(–teal); }
-.stat-card.ok::before { background: var(–green-br); }
-.stat-card.warn::before { background: var(–amber-br); }
-.stat-card.danger::before { background: var(–red-br); }
-
-.stat-num {
-font-family: ‘Syne’, sans-serif;
-font-size: 34px;
-font-weight: 800;
-line-height: 1;
-margin-bottom: 4px;
-}
-.stat-card.total .stat-num { color: var(–teal); }
-.stat-card.ok .stat-num { color: var(–green-br); }
-.stat-card.warn .stat-num { color: var(–amber-br); }
-.stat-card.danger .stat-num { color: var(–red-br); }
-.stat-label { font-size: 13px; color: var(–muted); font-weight: 500; }
-.stat-icon {
-position: absolute;
-top: 16px; right: 16px;
-font-size: 28px;
-opacity: 0.12;
-}
-
-/* ── FILTERS ── */
-.filters-row {
-display: flex;
-gap: 10px;
-margin-bottom: 20px;
-flex-wrap: wrap;
-align-items: center;
-}
-.filter-btn {
-padding: 7px 16px;
-border-radius: 20px;
-font-size: 13px;
-font-weight: 500;
-cursor: pointer;
-border: 1.5px solid var(–border);
-background: var(–white);
-color: var(–muted);
-transition: all 0.15s;
-font-family: ‘DM Sans’, sans-serif;
-}
-.filter-btn:hover { border-color: var(–teal); color: var(–teal); }
-.filter-btn.active { background: var(–navy); color: white; border-color: var(–navy); }
-
-.search-box {
-display: flex;
-align-items: center;
-gap: 8px;
-background: var(–white);
-border: 1.5px solid var(–border);
-border-radius: 8px;
-padding: 7px 14px;
-margin-left: auto;
-}
-.search-box input {
-border: none;
-outline: none;
-font-size: 13px;
-font-family: ‘DM Sans’, sans-serif;
-color: var(–text);
-width: 200px;
-background: transparent;
-}
-
-/* ── TABLE ── */
-.table-card {
-background: var(–card);
-border-radius: 14px;
-border: 1px solid var(–border);
-box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-overflow: hidden;
-}
-.table-header {
-padding: 16px 20px;
-border-bottom: 1px solid var(–border);
-display: flex;
-align-items: center;
-justify-content: space-between;
-}
-.table-header h3 {
-font-family: ‘Syne’, sans-serif;
-font-size: 15px;
-font-weight: 700;
-color: var(–navy);
-}
-
-table { width: 100%; border-collapse: collapse; }
-thead th {
-text-align: left;
-padding: 12px 20px;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 1px;
-text-transform: uppercase;
-color: var(–muted);
-background: #F8FAFC;
-border-bottom: 1px solid var(–border);
-}
-tbody tr {
-border-bottom: 1px solid #F1F5F9;
-transition: background 0.12s;
-}
-tbody tr:hover { background: #F8FAFC; }
-tbody tr:last-child { border-bottom: none; }
-td { padding: 14px 20px; font-size: 13.5px; vertical-align: middle; }
-
-.empresa-tag {
-display: inline-block;
-padding: 3px 10px;
-border-radius: 4px;
-font-size: 11.5px;
-font-weight: 600;
-background: var(–teal-lt);
-color: var(–teal);
-}
-.empresa-tag.cd { background: #EEF2FF; color: #4338CA; }
-.empresa-tag.varejo { background: #FFF7ED; color: #C2410C; }
-.empresa-tag.motel { background: #FDF4FF; color: #9333EA; }
-.empresa-tag.hotel { background: #F0FDF4; color: #15803D; }
-
-.status-badge {
-display: inline-flex;
-align-items: center;
-gap: 5px;
-padding: 4px 12px;
-border-radius: 20px;
-font-size: 12px;
-font-weight: 600;
-}
-.status-badge.green { background: var(–green-lt); color: var(–green); }
-.status-badge.amber { background: var(–amber-lt); color: var(–amber); }
-.status-badge.red { background: var(–red-lt); color: var(–red); }
-.status-dot {
-width: 6px; height: 6px;
-border-radius: 50%;
-display: inline-block;
-}
-.green .status-dot { background: var(–green-br); }
-.amber .status-dot { background: var(–amber-br); }
-.red .status-dot { background: var(–red-br); }
-
-.dias-badge {
-font-family: ‘Syne’, sans-serif;
-font-weight: 700;
-font-size: 13px;
-}
-.dias-badge.green { color: var(–green); }
-.dias-badge.amber { color: var(–amber-br); }
-.dias-badge.red { color: var(–red-br); }
-
-.action-btns { display: flex; gap: 6px; }
-
-/* ── MODAL ── */
-.modal-overlay {
-display: none;
-position: fixed;
-inset: 0;
-background: rgba(13,27,62,0.5);
-backdrop-filter: blur(3px);
-z-index: 1000;
-align-items: center;
-justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-background: var(–white);
-border-radius: 16px;
-padding: 32px;
-width: 560px;
-max-width: 95vw;
-max-height: 90vh;
-overflow-y: auto;
-box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-animation: modalIn 0.22s ease;
-}
-@keyframes modalIn {
-from { opacity: 0; transform: scale(0.95) translateY(10px); }
-to { opacity: 1; transform: scale(1) translateY(0); }
-}
-.modal-title {
-font-family: ‘Syne’, sans-serif;
-font-size: 20px;
-font-weight: 700;
-color: var(–navy);
-margin-bottom: 4px;
-}
-.modal-sub { font-size: 13px; color: var(–muted); margin-bottom: 24px; }
-
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-group { margin-bottom: 14px; }
-.form-group label {
-display: block;
-font-size: 12px;
-font-weight: 600;
-color: var(–navy);
-margin-bottom: 6px;
-text-transform: uppercase;
-letter-spacing: 0.5px;
-}
-.form-group input,
-.form-group select,
-.form-group textarea {
-width: 100%;
-padding: 10px 14px;
-border: 1.5px solid var(–border);
-border-radius: 8px;
-font-size: 14px;
-font-family: ‘DM Sans’, sans-serif;
-color: var(–text);
-background: var(–white);
-outline: none;
-transition: border-color 0.15s;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus { border-color: var(–teal); box-shadow: 0 0 0 3px rgba(12,123,123,0.1); }
-.form-group textarea { resize: vertical; min-height: 80px; }
-
-.modal-footer {
-display: flex;
-gap: 10px;
-justify-content: flex-end;
-margin-top: 20px;
-padding-top: 16px;
-border-top: 1px solid var(–border);
-}
-
-/* ── EMAIL PREVIEW ── */
-.email-preview {
-background: #F8FAFC;
-border: 1.5px solid var(–border);
-border-radius: 10px;
-padding: 20px;
-margin-bottom: 16px;
-font-size: 13.5px;
-line-height: 1.7;
-}
-.email-preview .ep-header {
-background: var(–navy);
-color: white;
-padding: 14px 18px;
-border-radius: 8px 8px 0 0;
-margin: -20px -20px 16px;
-font-family: ‘Syne’, sans-serif;
-font-weight: 700;
-font-size: 15px;
-}
-.email-preview .ep-meta { color: var(–muted); font-size: 12px; margin-bottom: 12px; }
-.email-preview .ep-meta span { color: var(–text); font-weight: 500; }
-
-/* ── TOAST ── */
-.toast-container {
-position: fixed;
-bottom: 24px;
-right: 24px;
-z-index: 9999;
-display: flex;
-flex-direction: column;
-gap: 10px;
-}
-.toast {
-background: var(–navy);
-color: white;
-padding: 14px 18px;
-border-radius: 10px;
-font-size: 13.5px;
-font-weight: 500;
-box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-display: flex;
-align-items: center;
-gap: 10px;
-animation: toastIn 0.25s ease;
-max-width: 340px;
-}
-@keyframes toastIn {
-from { opacity: 0; transform: translateX(30px); }
-to { opacity: 1; transform: translateX(0); }
-}
-.toast.success { border-left: 4px solid var(–green-br); }
-.toast.warning { border-left: 4px solid var(–amber-br); }
-.toast.error { border-left: 4px solid var(–red-br); }
-.toast.info { border-left: 4px solid var(–teal-br); }
-
-/* ── EMPTY STATE ── */
-.empty-state {
-text-align: center;
-padding: 60px 20px;
-color: var(–muted);
-}
-.empty-state .es-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
-.empty-state h3 { font-size: 16px; font-weight: 600; color: var(–text); margin-bottom: 6px; }
-.empty-state p { font-size: 13.5px; }
-
-/* ── CONFIGURAÇÕES ── */
-.config-card {
-background: var(–card);
-border-radius: 14px;
-border: 1px solid var(–border);
-padding: 24px;
-margin-bottom: 20px;
-box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-}
-.config-card h3 {
-font-family: ‘Syne’, sans-serif;
-font-size: 16px;
-font-weight: 700;
-color: var(–navy);
-margin-bottom: 4px;
-}
-.config-card p { font-size: 13.5px; color: var(–muted); margin-bottom: 20px; }
-
-.info-box {
-background: var(–teal-lt);
-border: 1.5px solid var(–teal);
-border-radius: 10px;
-padding: 14px 18px;
-font-size: 13px;
-color: var(–teal);
-margin-bottom: 16px;
-line-height: 1.6;
-}
-.warn-box {
-background: var(–amber-lt);
-border: 1.5px solid var(–amber-br);
-border-radius: 10px;
-padding: 14px 18px;
-font-size: 13px;
-color: var(–amber);
-margin-bottom: 16px;
-line-height: 1.6;
-}
-
-/* ── ALERTA EMAIL PREVIEW ── */
-.alerta-card {
-border: 1px solid var(–border);
-border-radius: 12px;
-overflow: hidden;
-margin-bottom: 14px;
-}
-.alerta-header {
-padding: 14px 18px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-}
-.alerta-header.red { background: var(–red-lt); border-bottom: 1px solid #FECACA; }
-.alerta-header.amber { background: var(–amber-lt); border-bottom: 1px solid #FDE68A; }
-.alerta-body { padding: 14px 18px; font-size: 13px; color: var(–muted); line-height: 1.7; background: white; }
-.alerta-title { font-weight: 700; font-size: 14px; }
-.alerta-title.red { color: var(–red); }
-.alerta-title.amber { color: var(–amber); }
-
-/* ── RESPONSIVE TWEAKS ── */
-@media (max-width: 900px) {
-.stats-grid { grid-template-columns: repeat(2, 1fr); }
-.form-row { grid-template-columns: 1fr; }
-}
-
-.chip {
-display: inline-flex;
-align-items: center;
-gap: 4px;
-padding: 2px 9px;
-border-radius: 12px;
-font-size: 11.5px;
-font-weight: 600;
-background: var(–off);
-color: var(–muted);
-margin: 1px;
-}
-
-.divider {
-height: 1px;
-background: var(–border);
-margin: 20px 0;
-}
-
-.page-header {
-margin-bottom: 24px;
-}
-.page-header h2 {
-font-family: ‘Syne’, sans-serif;
-font-size: 22px;
-font-weight: 800;
-color: var(–navy);
-margin-bottom: 4px;
-}
-.page-header p { font-size: 13.5px; color: var(–muted); }
+.sidebar-logo { padding:26px 20px 16px; border-bottom:1px solid rgba(255,255,255,0.08); }
+.sidebar-logo h1 { font-family:'Syne',sans-serif; font-size:16px; font-weight:800; color:var(--white); line-height:1.2; }
+.sidebar-logo span { font-size:10px; color:var(--teal-br); font-weight:500; letter-spacing:1.5px; text-transform:uppercase; display:block; margin-top:4px; }
+.sidebar-nav { padding:12px 10px; flex:1; }
+.nav-label { font-size:10px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:rgba(255,255,255,0.3); padding:0 10px; margin:12px 0 4px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; cursor:pointer; color:rgba(255,255,255,0.65); font-size:14px; font-weight:500; transition:all 0.18s; margin-bottom:2px; border:none; background:none; width:100%; text-align:left; font-family:'DM Sans',sans-serif; }
+.nav-item:hover { background:rgba(255,255,255,0.07); color:var(--white); }
+.nav-item.active { background:var(--teal); color:var(--white); }
+.nav-icon { font-size:16px; width:20px; text-align:center; }
+.nav-badge { margin-left:auto; background:var(--red-br); color:white; font-size:10px; font-weight:700; padding:1px 7px; border-radius:20px; }
+.sidebar-footer { padding:12px; border-top:1px solid rgba(255,255,255,0.08); font-size:11px; color:rgba(255,255,255,0.3); text-align:center; }
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; height:var(--bottomnav-h); background:var(--navy); display:flex; align-items:center; justify-content:space-around; z-index:200; box-shadow:0 -4px 20px rgba(0,0,0,0.2); padding-bottom:env(safe-area-inset-bottom); }
+.bn-item { display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; padding:8px 10px; border-radius:10px; border:none; background:none; color:rgba(255,255,255,0.5); font-size:10px; font-weight:600; font-family:'DM Sans',sans-serif; transition:all 0.18s; position:relative; min-width:52px; }
+.bn-item.active { color:var(--teal-br); }
+.bn-item .bn-icon { font-size:20px; }
+.bn-add { background:var(--teal)!important; border-radius:14px!important; color:white!important; }
+.bn-badge { position:absolute; top:3px; right:6px; background:var(--red-br); color:white; font-size:9px; font-weight:700; padding:1px 5px; border-radius:20px; }
+.topbar { background:var(--white); border-bottom:1px solid var(--border); padding:14px 28px; display:flex; align-items:center; justify-content:space-between; z-index:50; }
+.topbar-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; color:var(--navy); }
+.topbar-sub { font-size:12px; color:var(--muted); margin-top:1px; }
+.topbar-actions { display:flex; gap:8px; align-items:center; flex-shrink:0; }
+.btn { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:8px; font-size:13.5px; font-weight:600; cursor:pointer; border:none; transition:all 0.18s; font-family:'DM Sans',sans-serif; white-space:nowrap; }
+.btn-primary { background:var(--teal); color:white; }
+.btn-primary:hover { background:var(--teal-br); }
+.btn-outline { background:transparent; color:var(--navy); border:1.5px solid var(--border); }
+.btn-outline:hover { border-color:var(--teal); color:var(--teal); }
+.btn-danger { background:var(--red-br); color:white; }
+.btn-sm { padding:6px 12px; font-size:12.5px; }
+.btn-icon { padding:7px; border-radius:7px; }
+.btn-full { width:100%; justify-content:center; }
+.content { flex:1; }
+.view { display:none; }
+.view.active { display:block; }
+.stats-grid { display:grid; gap:12px; margin-bottom:14px; }
+.stat-card { background:var(--white); border-radius:12px; padding:16px; border:1px solid var(--border); box-shadow:0 1px 4px rgba(0,0,0,0.04); position:relative; overflow:hidden; cursor:pointer; }
+.stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.stat-card.total::before { background:var(--teal); }
+.stat-card.ok::before { background:var(--green-br); }
+.stat-card.warn::before { background:var(--amber-br); }
+.stat-card.danger::before { background:var(--red-br); }
+.stat-num { font-family:'Syne',sans-serif; font-size:30px; font-weight:800; line-height:1; margin-bottom:4px; }
+.stat-card.total .stat-num { color:var(--teal); }
+.stat-card.ok .stat-num { color:var(--green-br); }
+.stat-card.warn .stat-num { color:var(--amber-br); }
+.stat-card.danger .stat-num { color:var(--red-br); }
+.stat-label { font-size:12px; color:var(--muted); font-weight:500; }
+.filters-row { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:center; overflow-x:auto; padding-bottom:4px; }
+.filter-btn { padding:6px 14px; border-radius:20px; font-size:12.5px; font-weight:500; cursor:pointer; border:1.5px solid var(--border); background:var(--white); color:var(--muted); transition:all 0.15s; font-family:'DM Sans',sans-serif; white-space:nowrap; flex-shrink:0; }
+.filter-btn:hover { border-color:var(--teal); color:var(--teal); }
+.filter-btn.active { background:var(--navy); color:white; border-color:var(--navy); }
+.search-box { display:flex; align-items:center; gap:8px; background:var(--white); border:1.5px solid var(--border); border-radius:8px; padding:6px 12px; }
+.search-box input { border:none; outline:none; font-size:13px; font-family:'DM Sans',sans-serif; color:var(--text); width:180px; background:transparent; }
+.table-card { background:var(--white); border-radius:14px; border:1px solid var(--border); box-shadow:0 1px 6px rgba(0,0,0,0.05); overflow:hidden; }
+.table-header { padding:14px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.table-header h3 { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--navy); }
+table { width:100%; border-collapse:collapse; }
+thead th { text-align:left; padding:10px 16px; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); background:#F8FAFC; border-bottom:1px solid var(--border); white-space:nowrap; }
+tbody tr { border-bottom:1px solid #F1F5F9; transition:background 0.12s; }
+tbody tr:hover { background:#F8FAFC; }
+tbody tr:last-child { border-bottom:none; }
+td { padding:12px 16px; font-size:13px; vertical-align:middle; }
+.card-list { padding:12px; }
+.tr-card { background:var(--white); border-radius:12px; border:1px solid var(--border); padding:14px; box-shadow:0 1px 4px rgba(0,0,0,0.04); margin-bottom:10px; }
+.tr-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.tr-card-title { font-weight:700; font-size:14px; color:var(--text); }
+.tr-card-tipo { font-size:13px; color:var(--muted); margin-top:2px; }
+.tr-card-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; font-size:12px; color:var(--muted); align-items:center; }
+.tr-card-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.empresa-tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; background:var(--teal-lt); color:var(--teal); }
+.empresa-tag.cd { background:#EEF2FF; color:#4338CA; }
+.empresa-tag.varejo { background:#FFF7ED; color:#C2410C; }
+.empresa-tag.motel { background:#FDF4FF; color:#9333EA; }
+.empresa-tag.hotel { background:#F0FDF4; color:#15803D; }
+.status-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:20px; font-size:11.5px; font-weight:600; white-space:nowrap; }
+.status-badge.green { background:var(--green-lt); color:var(--green); }
+.status-badge.amber { background:var(--amber-lt); color:var(--amber); }
+.status-badge.red { background:var(--red-lt); color:var(--red); }
+.status-dot { width:6px; height:6px; border-radius:50%; display:inline-block; }
+.green .status-dot { background:var(--green-br); }
+.amber .status-dot { background:var(--amber-br); }
+.red .status-dot { background:var(--red-br); }
+.dias-badge { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; }
+.dias-badge.green { color:var(--green); }
+.dias-badge.amber { color:var(--amber-br); }
+.dias-badge.red { color:var(--red-br); }
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(13,27,62,0.55); backdrop-filter:blur(3px); z-index:1000; align-items:center; justify-content:center; padding:16px; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--white); border-radius:16px; padding:24px; max-width:96vw; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.2); animation:modalIn 0.22s ease; width:100%; }
+@keyframes modalIn { from{opacity:0;transform:scale(0.95) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.modal-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.modal-sub { font-size:13px; color:var(--muted); margin-bottom:18px; }
+.form-row-2 { display:grid; gap:12px; }
+.form-group { margin-bottom:12px; }
+.form-group label { display:block; font-size:11px; font-weight:600; color:var(--navy); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.5px; }
+.form-group input,.form-group select,.form-group textarea { width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; color:var(--text); background:var(--white); outline:none; transition:border-color 0.15s; -webkit-appearance:none; appearance:none; }
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(12,123,123,0.1); }
+.form-group textarea { resize:vertical; min-height:70px; }
+.modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
+.email-preview { background:#F8FAFC; border:1.5px solid var(--border); border-radius:10px; padding:16px; margin-bottom:14px; font-size:13.5px; line-height:1.7; overflow:hidden; }
+.ep-header { color:white; padding:12px 16px; border-radius:8px 8px 0 0; margin:-16px -16px 14px; font-family:'Syne',sans-serif; font-weight:700; font-size:14px; }
+.ep-meta { color:var(--muted); font-size:12px; margin-bottom:10px; }
+.ep-meta span { color:var(--text); font-weight:500; }
+.toast-container { position:fixed; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+.toast { background:var(--navy); color:white; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,0.2); display:flex; align-items:center; gap:10px; animation:toastIn 0.25s ease; max-width:320px; }
+@keyframes toastIn { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+.toast.success { border-left:4px solid var(--green-br); }
+.toast.warning { border-left:4px solid var(--amber-br); }
+.toast.error { border-left:4px solid var(--red-br); }
+.toast.info { border-left:4px solid var(--teal-br); }
+.empty-state { text-align:center; padding:48px 20px; color:var(--muted); }
+.empty-state .es-icon { font-size:44px; margin-bottom:10px; opacity:0.5; }
+.empty-state h3 { font-size:15px; font-weight:600; color:var(--text); margin-bottom:5px; }
+.empty-state p { font-size:13px; }
+.config-card { background:var(--white); border-radius:14px; border:1px solid var(--border); padding:20px; margin-bottom:16px; box-shadow:0 1px 6px rgba(0,0,0,0.05); }
+.config-card h3 { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.config-card p { font-size:13px; color:var(--muted); margin-bottom:14px; }
+.info-box { background:var(--teal-lt); border:1.5px solid var(--teal); border-radius:10px; padding:12px 16px; font-size:13px; color:var(--teal); margin-bottom:14px; line-height:1.6; }
+.warn-box { background:var(--amber-lt); border:1.5px solid var(--amber-br); border-radius:10px; padding:12px 16px; font-size:13px; color:var(--amber); margin-bottom:14px; line-height:1.6; }
+.alerta-card { border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:12px; }
+.alerta-header { padding:12px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.alerta-header.red { background:var(--red-lt); border-bottom:1px solid #FECACA; }
+.alerta-header.amber { background:var(--amber-lt); border-bottom:1px solid #FDE68A; }
+.alerta-body { padding:12px 16px; font-size:13px; color:var(--muted); line-height:1.7; background:white; }
+.alerta-title { font-weight:700; font-size:13.5px; }
+.alerta-title.red { color:var(--red); }
+.alerta-title.amber { color:var(--amber); }
+.page-header { margin-bottom:18px; }
+.page-header h2 { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--navy); margin-bottom:3px; }
+.page-header p { font-size:13px; color:var(--muted); }
+.action-btns { display:flex; gap:5px; }
 </style>
-
 </head>
 <body>
-
-<!-- SIDEBAR -->
-
 <nav class="sidebar">
-  <div class="sidebar-logo">
-    <span>Recursos Humanos</span>
-    <h1>Gestão de<br>Treinamentos</h1>
-  </div>
+  <div class="sidebar-logo"><span>Recursos Humanos</span><h1>Gestão de<br>Treinamentos</h1></div>
   <div class="sidebar-nav">
     <div class="nav-label">Principal</div>
-    <button class="nav-item active" onclick="showView('dashboard')">
-      <span class="nav-icon">📊</span> Dashboard
-    </button>
-    <button class="nav-item" onclick="showView('treinamentos')">
-      <span class="nav-icon">📋</span> Treinamentos
-      <span class="nav-badge" id="badge-total">0</span>
-    </button>
-    <button class="nav-item" onclick="showView('alertas')">
-      <span class="nav-icon">🔔</span> Alertas
-      <span class="nav-badge" id="badge-alertas">0</span>
-    </button>
+    <button class="nav-item active" onclick="showView('dashboard')"><span class="nav-icon">📊</span>Dashboard</button>
+    <button class="nav-item" onclick="showView('treinamentos')"><span class="nav-icon">📋</span>Treinamentos<span class="nav-badge" id="badge-total">0</span></button>
+    <button class="nav-item" onclick="showView('alertas')"><span class="nav-icon">🔔</span>Alertas<span class="nav-badge" id="badge-alertas" style="display:none">0</span></button>
     <div class="nav-label">Sistema</div>
-    <button class="nav-item" onclick="showView('configuracoes')">
-      <span class="nav-icon">⚙️</span> Configurações
-    </button>
-    <button class="nav-item" onclick="showView('sobre')">
-      <span class="nav-icon">❓</span> Como usar
-    </button>
+    <button class="nav-item" onclick="showView('configuracoes')"><span class="nav-icon">⚙️</span>Configurações</button>
+    <button class="nav-item" onclick="showView('sobre')"><span class="nav-icon">❓</span>Como usar</button>
   </div>
-  <div class="sidebar-footer">
-    v1.0 — RH Automação<br>Maio 2026
-  </div>
+  <div class="sidebar-footer">v1.0 — RH · Maio 2026</div>
 </nav>
-
-<!-- MAIN -->
-
+<nav class="bottom-nav">
+  <button class="bn-item active" onclick="showView('dashboard')"><span class="bn-icon">📊</span>Dashboard</button>
+  <button class="bn-item" onclick="showView('treinamentos')"><span class="bn-icon">📋</span>Lista<span class="bn-badge" id="bn-badge-total" style="display:none">0</span></button>
+  <button class="bn-item bn-add" onclick="abrirModal()"><span class="bn-icon">➕</span>Novo</button>
+  <button class="bn-item" onclick="showView('alertas')"><span class="bn-icon">🔔</span>Alertas<span class="bn-badge" id="bn-badge-alertas" style="display:none">0</span></button>
+  <button class="bn-item" onclick="showView('configuracoes')"><span class="bn-icon">⚙️</span>Config</button>
+</nav>
 <div class="main">
-  <!-- TOPBAR -->
   <div class="topbar">
-    <div>
-      <div class="topbar-title" id="topbar-title">Dashboard</div>
-      <div class="topbar-sub" id="topbar-sub">Visão geral de todos os treinamentos</div>
-    </div>
+    <div><div class="topbar-title" id="topbar-title">Dashboard</div><div class="topbar-sub" id="topbar-sub">Visão geral de todos os treinamentos</div></div>
     <div class="topbar-actions">
-      <button class="btn btn-outline" onclick="verificarAlertas()">🔔 Verificar alertas</button>
-      <button class="btn btn-primary" onclick="abrirModal()">+ Novo treinamento</button>
+      <button class="btn btn-outline btn-sm btn-hide-mobile" onclick="verificarAlertas()">🔔 Alertas</button>
+      <button class="btn btn-primary btn-sm" onclick="abrirModal()">+ Novo</button>
     </div>
   </div>
-
-  <!-- CONTENT -->
-
   <div class="content">
-
-```
-<!-- VIEW: DASHBOARD -->
-<div class="view active" id="view-dashboard">
-  <div class="stats-grid">
-    <div class="stat-card total">
-      <div class="stat-num" id="stat-total">0</div>
-      <div class="stat-label">Total de treinamentos</div>
-      <div class="stat-icon">📋</div>
-    </div>
-    <div class="stat-card ok">
-      <div class="stat-num" id="stat-ok">0</div>
-      <div class="stat-label">🟢 Na semana / em dia</div>
-      <div class="stat-icon">✅</div>
-    </div>
-    <div class="stat-card warn">
-      <div class="stat-num" id="stat-warn">0</div>
-      <div class="stat-label">🟡 Próximos do vencimento</div>
-      <div class="stat-icon">⚠️</div>
-    </div>
-    <div class="stat-card danger">
-      <div class="stat-num" id="stat-danger">0</div>
-      <div class="stat-label">🔴 Vencidos ou urgentes</div>
-      <div class="stat-icon">🚨</div>
-    </div>
-  </div>
-
-  <!-- por segmento -->
-  <div style="display:grid; grid-template-columns: repeat(4,1fr); gap:16px; margin-bottom:24px;" id="seg-grid">
-  </div>
-
-  <!-- tabela resumo -->
-  <div class="table-card">
-    <div class="table-header">
-      <h3>⚠️ Requer atenção — próximos 30 dias</h3>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Empresa</th>
-          <th>Treinamento</th>
-          <th>Segmento</th>
-          <th>Vencimento</th>
-          <th>Status</th>
-          <th>Dias restantes</th>
-        </tr>
-      </thead>
-      <tbody id="tb-dashboard"></tbody>
-    </table>
-    <div class="empty-state" id="dashboard-empty" style="display:none;">
-      <div class="es-icon">🎉</div>
-      <h3>Tudo em dia!</h3>
-      <p>Nenhum treinamento vencendo nos próximos 30 dias.</p>
-    </div>
-  </div>
-</div>
-
-<!-- VIEW: TREINAMENTOS -->
-<div class="view" id="view-treinamentos">
-  <div class="page-header">
-    <h2>Todos os Treinamentos</h2>
-    <p>Gerencie os treinamentos de todas as unidades</p>
-  </div>
-  <div class="filters-row">
-    <button class="filter-btn active" onclick="filtrar(this,'todos')">Todos</button>
-    <button class="filter-btn" onclick="filtrar(this,'CD')">CDs</button>
-    <button class="filter-btn" onclick="filtrar(this,'Varejo')">Varejo</button>
-    <button class="filter-btn" onclick="filtrar(this,'Motel')">Motel</button>
-    <button class="filter-btn" onclick="filtrar(this,'Hotel')">Hotel</button>
-    <button class="filter-btn" onclick="filtrar(this,'Gestão')">Gestão</button>
-    <div class="search-box">
-      🔍 <input type="text" id="search-input" placeholder="Buscar empresa ou treinamento..." oninput="renderTabela()">
-    </div>
-  </div>
-  <div class="table-card">
-    <div class="table-header">
-      <h3>📋 Lista de treinamentos</h3>
-      <span style="font-size:13px;color:var(--muted);" id="count-label"></span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Empresa</th>
-          <th>Treinamento</th>
-          <th>Segmento</th>
-          <th>Responsável</th>
-          <th>E-mail alertas</th>
-          <th>Realizado em</th>
-          <th>Vencimento</th>
-          <th>Status</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="tb-lista"></tbody>
-    </table>
-    <div class="empty-state" id="lista-empty" style="display:none;">
-      <div class="es-icon">📋</div>
-      <h3>Nenhum treinamento cadastrado</h3>
-      <p>Clique em "+ Novo treinamento" para começar.</p>
-    </div>
-  </div>
-</div>
-
-<!-- VIEW: ALERTAS -->
-<div class="view" id="view-alertas">
-  <div class="page-header">
-    <h2>Central de Alertas</h2>
-    <p>Pré-visualização dos e-mails que serão enviados</p>
-  </div>
-  <div class="info-box">
-    💡 <strong>Como funciona:</strong> Clique em "Verificar alertas" para o sistema calcular quais treinamentos estão próximos do vencimento ou vencidos. Os e-mails abaixo mostram exatamente o que será enviado para cada gestor responsável.
-  </div>
-  <div id="alertas-container">
-    <div class="empty-state">
-      <div class="es-icon">🔔</div>
-      <h3>Nenhum alerta ainda</h3>
-      <p>Clique em "Verificar alertas" no canto superior direito.</p>
-    </div>
-  </div>
-</div>
-
-<!-- VIEW: CONFIGURAÇÕES -->
-<div class="view" id="view-configuracoes">
-  <div class="page-header">
-    <h2>Configurações</h2>
-    <p>Configure os parâmetros do sistema de alertas</p>
-  </div>
-
-  <div class="config-card">
-    <h3>📧 Configuração de E-mail</h3>
-    <p>Defina o e-mail do RH central que aparecerá como remetente e receberá cópia de todos os alertas.</p>
-    <div class="warn-box">
-      ⚠️ <strong>Atenção:</strong> Este sistema gera a pré-visualização dos e-mails. Para o envio automático funcionar sem ação manual, a TI precisa integrar com o servidor de e-mail da empresa (SMTP). Por enquanto, você pode usar o botão "Copiar e-mail" para enviar manualmente.
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>E-mail do RH Central (remetente / cópia)</label>
-        <input type="email" id="cfg-email-rh" placeholder="rh@empresa.com.br" value="">
+    <div class="view active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card total"><div class="stat-num" id="stat-total">0</div><div class="stat-label">📋 Total</div></div>
+        <div class="stat-card ok"><div class="stat-num" id="stat-ok">0</div><div class="stat-label">🟢 Em dia</div></div>
+        <div class="stat-card warn"><div class="stat-num" id="stat-warn">0</div><div class="stat-label">🟡 Próximos</div></div>
+        <div class="stat-card danger"><div class="stat-num" id="stat-danger">0</div><div class="stat-label">🔴 Urgentes</div></div>
       </div>
-      <div class="form-group">
-        <label>Nome exibido no e-mail</label>
-        <input type="text" id="cfg-nome-rh" placeholder="RH Central" value="RH Central">
+      <div style="display:grid;gap:12px;margin-bottom:16px;" id="seg-grid" class="seg-grid"></div>
+      <div class="table-card">
+        <div class="table-header"><h3>⚠️ Requer atenção — próximos 30 dias</h3></div>
+        <table><thead><tr><th>Empresa</th><th>Treinamento</th><th>Segmento</th><th>Vencimento</th><th>Status</th><th>Dias</th></tr></thead><tbody id="tb-dashboard"></tbody></table>
+        <div class="card-list" id="cl-dashboard"></div>
+        <div class="empty-state" id="dashboard-empty" style="display:none;"><div class="es-icon">🎉</div><h3>Tudo em dia!</h3><p>Nenhum treinamento vencendo nos próximos 30 dias.</p></div>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Alertar com antecedência (dias)</label>
-        <select id="cfg-dias-1">
-          <option value="30" selected>30 dias antes</option>
-          <option value="45">45 dias antes</option>
-          <option value="60">60 dias antes</option>
-        </select>
+    <div class="view" id="view-treinamentos">
+      <div class="page-header"><h2>Todos os Treinamentos</h2><p>Gerencie os treinamentos de todas as unidades</p></div>
+      <div class="filters-row">
+        <button class="filter-btn active" onclick="filtrar(this,'todos')">Todos</button>
+        <button class="filter-btn" onclick="filtrar(this,'CD')">CDs</button>
+        <button class="filter-btn" onclick="filtrar(this,'Varejo')">Varejo</button>
+        <button class="filter-btn" onclick="filtrar(this,'Motel')">Motel</button>
+        <button class="filter-btn" onclick="filtrar(this,'Hotel')">Hotel</button>
+        <button class="filter-btn" onclick="filtrar(this,'Gestão')">Gestão</button>
+        <div class="search-box" style="margin-left:auto;">🔍<input type="text" id="search-input" placeholder="Buscar..." oninput="renderTabela()"></div>
       </div>
-      <div class="form-group">
-        <label>Segundo alerta (urgente)</label>
-        <select id="cfg-dias-2">
-          <option value="7" selected>7 dias antes</option>
-          <option value="10">10 dias antes</option>
-          <option value="15">15 dias antes</option>
-        </select>
+      <div class="table-card">
+        <div class="table-header"><h3>📋 Lista</h3><span style="font-size:12px;color:var(--muted);" id="count-label"></span></div>
+        <table><thead><tr><th>Empresa</th><th>Treinamento</th><th>Segmento</th><th>Gestor</th><th>Realizado</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tb-lista"></tbody></table>
+        <div class="card-list" id="cl-lista"></div>
+        <div class="empty-state" id="lista-empty" style="display:none;"><div class="es-icon">📋</div><h3>Nenhum treinamento</h3><p>Toque em "+ Novo" para começar.</p></div>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="salvarConfig()">💾 Salvar configurações</button>
-  </div>
-
-  <div class="config-card">
-    <h3>📨 Modelo dos e-mails de alerta</h3>
-    <p>Veja como ficam os e-mails que serão enviados para os gestores responsáveis.</p>
-    <div class="alerta-card">
-      <div class="alerta-header amber">
-        <div>
-          <div class="alerta-title amber">🟡 Alerta — 30 dias antes do vencimento</div>
-          <div style="font-size:12px;color:var(--amber);margin-top:2px;">Enviado para: gestor da unidade + cópia para o RH</div>
+    <div class="view" id="view-alertas">
+      <div class="page-header"><h2>Central de Alertas</h2><p>E-mails prontos para enviar aos gestores</p></div>
+      <div class="info-box">💡 <strong>Como funciona:</strong> Toque em "Verificar alertas" para gerar os e-mails personalizados de cada treinamento próximo do vencimento.</div>
+      <button class="btn btn-primary btn-full" style="margin-bottom:16px;" onclick="verificarAlertas()">🔔 Verificar alertas agora</button>
+      <div id="alertas-container"><div class="empty-state"><div class="es-icon">🔔</div><h3>Toque em "Verificar alertas"</h3><p>O sistema vai calcular quais treinamentos precisam de atenção.</p></div></div>
+    </div>
+    <div class="view" id="view-configuracoes">
+      <div class="page-header"><h2>Configurações</h2><p>Parâmetros do sistema de alertas</p></div>
+      <div class="config-card">
+        <h3>📧 E-mail do RH</h3><p>Configure o e-mail que receberá cópia de todos os alertas.</p>
+        <div class="warn-box">⚠️ O sistema gera a pré-visualização dos e-mails. Para envio automático, peça à TI para integrar com o SMTP da empresa.</div>
+        <div class="form-row-2" style="display:grid;gap:12px;">
+          <div class="form-group"><label>E-mail do RH</label><input type="email" id="cfg-email-rh" placeholder="rh@empresa.com.br"></div>
+          <div class="form-group"><label>Nome exibido</label><input type="text" id="cfg-nome-rh" value="RH Central"></div>
         </div>
-      </div>
-      <div class="alerta-body">
-        <strong>Assunto:</strong> ⚠️ Atenção: Treinamento [NOME] da [EMPRESA] vence em 30 dias<br><br>
-        Prezado(a) <strong>[NOME DO GESTOR]</strong>,<br><br>
-        Informamos que o treinamento <strong>[NOME DO TREINAMENTO]</strong> da unidade <strong>[EMPRESA]</strong> 
-        terá seu prazo de validade vencendo em <strong>30 dias</strong>, na data de <strong>[DATA DE VENCIMENTO]</strong>.<br><br>
-        Por favor, providencie o agendamento e realização do treinamento dentro do prazo.<br><br>
-        Atenciosamente,<br>
-        <strong>RH Central</strong>
-      </div>
-    </div>
-    <div class="alerta-card">
-      <div class="alerta-header red">
-        <div>
-          <div class="alerta-title red">🔴 Alerta urgente — 7 dias antes do vencimento</div>
-          <div style="font-size:12px;color:var(--red);margin-top:2px;">Enviado para: gestor + segurança do trabalho + RH Central</div>
+        <div class="form-row-2" style="display:grid;gap:12px;">
+          <div class="form-group"><label>Primeiro alerta</label><select id="cfg-dias-1"><option value="30" selected>30 dias antes</option><option value="45">45 dias antes</option><option value="60">60 dias antes</option></select></div>
+          <div class="form-group"><label>Alerta urgente</label><select id="cfg-dias-2"><option value="7" selected>7 dias antes</option><option value="10">10 dias antes</option><option value="15">15 dias antes</option></select></div>
         </div>
+        <button class="btn btn-primary" onclick="salvarConfig()">💾 Salvar configurações</button>
       </div>
-      <div class="alerta-body">
-        <strong>Assunto:</strong> 🚨 URGENTE: Treinamento [NOME] da [EMPRESA] vence em 7 dias<br><br>
-        Prezado(a) <strong>[NOME DO GESTOR]</strong>,<br><br>
-        <strong>ATENÇÃO URGENTE:</strong> O treinamento <strong>[NOME DO TREINAMENTO]</strong> da unidade <strong>[EMPRESA]</strong> 
-        vencerá em <strong>7 dias</strong>, no dia <strong>[DATA DE VENCIMENTO]</strong>.<br><br>
-        Se o treinamento não for realizado até esta data, a empresa estará em não conformidade. 
-        Favor confirmar o agendamento imediatamente.<br><br>
-        Atenciosamente,<br>
-        <strong>RH Central</strong>
-      </div>
-    </div>
-  </div>
-
-  <div class="config-card">
-    <h3>🗑️ Dados do sistema</h3>
-    <p>Gerencie os dados salvos neste sistema.</p>
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-outline" onclick="exportarDados()">📥 Exportar dados (JSON)</button>
-      <button class="btn btn-danger btn-sm" onclick="limparDados()">🗑️ Limpar todos os dados</button>
-    </div>
-  </div>
-</div>
-
-<!-- VIEW: SOBRE -->
-<div class="view" id="view-sobre">
-  <div class="page-header">
-    <h2>Como usar este sistema</h2>
-    <p>Guia rápido para você começar agora</p>
-  </div>
-  <div class="config-card">
-    <h3>🚀 Primeiros passos</h3>
-    <p>Siga essa ordem para configurar o sistema:</p>
-    <div style="display:flex;flex-direction:column;gap:14px;">
-      <div style="display:flex;gap:14px;align-items:flex-start;">
-        <div style="background:var(--teal);color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">1</div>
-        <div>
-          <div style="font-weight:600;margin-bottom:2px;">Configure seu e-mail</div>
-          <div style="font-size:13px;color:var(--muted);">Vá em Configurações e coloque o e-mail do RH Central. Ele receberá cópia de todos os alertas.</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:14px;align-items:flex-start;">
-        <div style="background:var(--teal);color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">2</div>
-        <div>
-          <div style="font-weight:600;margin-bottom:2px;">Cadastre os treinamentos</div>
-          <div style="font-size:13px;color:var(--muted);">Clique em "+ Novo treinamento" e preencha: empresa, tipo de treinamento, data de realização, periodicidade e e-mail do gestor responsável.</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:14px;align-items:flex-start;">
-        <div style="background:var(--teal);color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">3</div>
-        <div>
-          <div style="font-weight:600;margin-bottom:2px;">Verifique o dashboard</div>
-          <div style="font-size:13px;color:var(--muted);">O painel mostra automaticamente quais estão em dia (🟢), próximos do vencimento (🟡) ou vencidos (🔴).</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:14px;align-items:flex-start;">
-        <div style="background:var(--teal);color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">4</div>
-        <div>
-          <div style="font-weight:600;margin-bottom:2px;">Envie os alertas</div>
-          <div style="font-size:13px;color:var(--muted);">Clique em "Verificar alertas" para ver quais precisam de atenção. Use "Copiar e-mail" para enviar manualmente ou peça para a TI automatizar o envio.</div>
+      <div class="config-card">
+        <h3>🗑️ Dados do sistema</h3><p>Gerencie os dados salvos.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="exportarDados()">📥 Exportar (JSON)</button>
+          <button class="btn btn-danger btn-sm" onclick="limparDados()">🗑️ Limpar tudo</button>
         </div>
       </div>
     </div>
-  </div>
-  <div class="config-card">
-    <h3>🎨 Legenda de cores</h3>
-    <p>O sistema usa cores para facilitar a visualização rápida:</p>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="display:flex;gap:12px;align-items:center;padding:12px;background:var(--green-lt);border-radius:8px;border:1px solid #BBF7D0;">
-        <span style="font-size:22px;">🟢</span>
-        <div><strong style="color:var(--green);">Verde</strong> — Treinamento na semana ou realizado recentemente. Tudo certo!</div>
+    <div class="view" id="view-sobre">
+      <div class="page-header"><h2>Como usar</h2><p>Guia rápido do sistema</p></div>
+      <div class="config-card">
+        <h3>🚀 Primeiros passos</h3><p>Siga essa ordem:</p>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;"><div style="background:var(--teal);color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">1</div><div><div style="font-weight:600;margin-bottom:2px;">Configure o e-mail</div><div style="font-size:13px;color:var(--muted);">Vá em Configurações e coloque o e-mail do RH Central.</div></div></div>
+          <div style="display:flex;gap:12px;align-items:flex-start;"><div style="background:var(--teal);color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">2</div><div><div style="font-weight:600;margin-bottom:2px;">Cadastre os treinamentos</div><div style="font-size:13px;color:var(--muted);">Toque em "+ Novo" e preencha empresa, tipo, data e gestor.</div></div></div>
+          <div style="display:flex;gap:12px;align-items:flex-start;"><div style="background:var(--teal);color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">3</div><div><div style="font-weight:600;margin-bottom:2px;">Acompanhe o dashboard</div><div style="font-size:13px;color:var(--muted);">Veja: 🟢 em dia, 🟡 próximos do vencimento, 🔴 vencidos.</div></div></div>
+          <div style="display:flex;gap:12px;align-items:flex-start;"><div style="background:var(--teal);color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">4</div><div><div style="font-weight:600;margin-bottom:2px;">Envie os alertas</div><div style="font-size:13px;color:var(--muted);">Na aba Alertas, copie os e-mails prontos e envie ao gestor.</div></div></div>
+        </div>
       </div>
-      <div style="display:flex;gap:12px;align-items:center;padding:12px;background:var(--amber-lt);border-radius:8px;border:1px solid #FDE68A;">
-        <span style="font-size:22px;">🟡</span>
-        <div><strong style="color:var(--amber);">Amarelo</strong> — Entre 8 e 30 dias para vencer. Hora de agendar!</div>
-      </div>
-      <div style="display:flex;gap:12px;align-items:center;padding:12px;background:var(--red-lt);border-radius:8px;border:1px solid #FECACA;">
-        <span style="font-size:22px;">🔴</span>
-        <div><strong style="color:var(--red);">Vermelho</strong> — Vencido ou vence em menos de 7 dias. Ação imediata necessária!</div>
+      <div class="config-card">
+        <h3>🎨 Legenda de cores</h3><p>Identificação rápida:</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;gap:10px;align-items:center;padding:10px;background:var(--green-lt);border-radius:8px;"><span style="font-size:20px;">🟢</span><div><strong style="color:var(--green);">Verde</strong> — Em dia.</div></div>
+          <div style="display:flex;gap:10px;align-items:center;padding:10px;background:var(--amber-lt);border-radius:8px;"><span style="font-size:20px;">🟡</span><div><strong style="color:var(--amber);">Amarelo</strong> — Entre 8 e 30 dias para vencer.</div></div>
+          <div style="display:flex;gap:10px;align-items:center;padding:10px;background:var(--red-lt);border-radius:8px;"><span style="font-size:20px;">🔴</span><div><strong style="color:var(--red);">Vermelho</strong> — Vencido ou menos de 7 dias.</div></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-```
-
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<!-- MODAL NOVO/EDITAR TREINAMENTO -->
-
 <div class="modal-overlay" id="modal-overlay" onclick="fecharModalSeFora(event)">
   <div class="modal">
     <div class="modal-title" id="modal-title">Novo Treinamento</div>
-    <div class="modal-sub">Preencha os dados do treinamento. O vencimento será calculado automaticamente.</div>
+    <div class="modal-sub">Preencha os dados. O vencimento é calculado automaticamente.</div>
     <input type="hidden" id="edit-id">
-
-```
-<div class="form-row">
-  <div class="form-group">
-    <label>Empresa *</label>
-    <input type="text" id="f-empresa" placeholder="Ex: Distribuidora Alfa">
-  </div>
-  <div class="form-group">
-    <label>Segmento *</label>
-    <select id="f-segmento">
-      <option value="">Selecione...</option>
-      <option value="CD">CD / Distribuidora</option>
-      <option value="Varejo">Varejo</option>
-      <option value="Motel">Motel Afrodite</option>
-      <option value="Hotel">Hotel Metropolitan</option>
-      <option value="Gestão">Gestão / Novos Gestores</option>
-    </select>
-  </div>
-</div>
-<div class="form-group">
-  <label>Tipo de Treinamento *</label>
-  <select id="f-tipo">
-    <option value="">Selecione...</option>
-    <option value="CIPA (NR-5)">CIPA (NR-5)</option>
-    <option value="SAST / SESMT">SAST / SESMT</option>
-    <option value="Formação de Novo Gestor">Formação de Novo Gestor</option>
-    <option value="NR-10">NR-10</option>
-    <option value="NR-35">NR-35</option>
-    <option value="Direção Defensiva">Direção Defensiva</option>
-    <option value="Primeiros Socorros">Primeiros Socorros</option>
-    <option value="Outro">Outro (digitar abaixo)</option>
-  </select>
-</div>
-<div class="form-group" id="f-outro-wrap" style="display:none;">
-  <label>Nome do treinamento (outro)</label>
-  <input type="text" id="f-outro" placeholder="Digite o nome do treinamento">
-</div>
-<div class="form-row">
-  <div class="form-group">
-    <label>Data de realização *</label>
-    <input type="date" id="f-data">
-  </div>
-  <div class="form-group">
-    <label>Periodicidade *</label>
-    <select id="f-periodo">
-      <option value="12">Anual (12 meses)</option>
-      <option value="6">Semestral (6 meses)</option>
-      <option value="24">Bienal (24 meses)</option>
-      <option value="3">Trimestral (3 meses)</option>
-    </select>
+    <div class="form-row-2" style="display:grid;gap:12px;">
+      <div class="form-group"><label>Empresa *</label><input type="text" id="f-empresa" placeholder="Ex: Distribuidora Alfa"></div>
+      <div class="form-group"><label>Segmento *</label><select id="f-segmento"><option value="">Selecione...</option><option value="CD">CD / Distribuidora</option><option value="Varejo">Varejo</option><option value="Motel">Motel Afrodite</option><option value="Hotel">Hotel Metropolitan</option><option value="Gestão">Gestão / Novos Gestores</option></select></div>
+    </div>
+    <div class="form-group"><label>Tipo de Treinamento *</label><select id="f-tipo"><option value="">Selecione...</option><option value="CIPA (NR-5)">CIPA (NR-5)</option><option value="SAST / SESMT">SAST / SESMT</option><option value="Formação de Novo Gestor">Formação de Novo Gestor</option><option value="NR-10">NR-10</option><option value="NR-35">NR-35</option><option value="Direção Defensiva">Direção Defensiva</option><option value="Primeiros Socorros">Primeiros Socorros</option><option value="Outro">Outro</option></select></div>
+    <div class="form-group" id="f-outro-wrap" style="display:none;"><label>Nome do treinamento</label><input type="text" id="f-outro" placeholder="Digite o nome"></div>
+    <div class="form-row-2" style="display:grid;gap:12px;">
+      <div class="form-group"><label>Data de realização *</label><input type="date" id="f-data"></div>
+      <div class="form-group"><label>Periodicidade *</label><select id="f-periodo"><option value="12">Anual (12 meses)</option><option value="6">Semestral (6 meses)</option><option value="24">Bienal (24 meses)</option><option value="3">Trimestral (3 meses)</option></select></div>
+    </div>
+    <div class="form-row-2" style="display:grid;gap:12px;">
+      <div class="form-group"><label>Nome do gestor *</label><input type="text" id="f-gestor" placeholder="Ex: Carlos Mendes"></div>
+      <div class="form-group"><label>E-mail do gestor *</label><input type="email" id="f-email" placeholder="gestor@empresa.com.br"></div>
+    </div>
+    <div class="form-group"><label>Observações</label><textarea id="f-obs" placeholder="Informações adicionais (opcional)"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarTreinamento()">💾 Salvar</button>
+    </div>
   </div>
 </div>
-<div class="form-row">
-  <div class="form-group">
-    <label>Nome do gestor responsável *</label>
-    <input type="text" id="f-gestor" placeholder="Ex: Carlos Mendes">
-  </div>
-  <div class="form-group">
-    <label>E-mail do gestor (alertas) *</label>
-    <input type="email" id="f-email" placeholder="gestor@empresa.com.br">
-  </div>
-</div>
-<div class="form-group">
-  <label>Observações</label>
-  <textarea id="f-obs" placeholder="Informações adicionais (opcional)"></textarea>
-</div>
-<div class="modal-footer">
-  <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
-  <button class="btn btn-primary" onclick="salvarTreinamento()">💾 Salvar treinamento</button>
-</div>
-```
-
-  </div>
-</div>
-
-<!-- MODAL EMAIL PREVIEW -->
-
 <div class="modal-overlay" id="modal-email-overlay" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" style="max-width:600px;">
-    <div class="modal-title">📧 Pré-visualização do E-mail</div>
-    <div class="modal-sub">Este é o e-mail que será enviado. Copie e envie manualmente ou peça à TI para automatizar.</div>
+  <div class="modal">
+    <div class="modal-title">📧 E-mail de Alerta</div>
+    <div class="modal-sub">Copie e envie manualmente para o gestor responsável.</div>
     <div class="email-preview" id="email-preview-content"></div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="document.getElementById('modal-email-overlay').classList.remove('open')">Fechar</button>
@@ -1028,509 +346,45 @@ margin-bottom: 4px;
     </div>
   </div>
 </div>
-
-<!-- TOASTS -->
-
 <div class="toast-container" id="toast-container"></div>
-
 <script>
-// ─── STATE ───────────────────────────────────────────────────────────────────
-let treinamentos = JSON.parse(localStorage.getItem('rh_treinamentos') || '[]');
-let config = JSON.parse(localStorage.getItem('rh_config') || '{"emailRH":"","nomeRH":"RH Central","dias1":30,"dias2":7}');
-let filtroAtivo = 'todos';
-let emailParaCopiar = '';
-
-// ─── UTILS ───────────────────────────────────────────────────────────────────
-function addMeses(dateStr, meses) {
-  const d = new Date(dateStr + 'T12:00:00');
-  d.setMonth(d.getMonth() + meses);
-  return d.toISOString().split('T')[0];
-}
-
-function diffDias(dateStr) {
-  const hoje = new Date(); hoje.setHours(0,0,0,0);
-  const d = new Date(dateStr + 'T12:00:00');
-  return Math.ceil((d - hoje) / 86400000);
-}
-
-function fmtData(dateStr) {
-  if (!dateStr) return '-';
-  const [y,m,d] = dateStr.split('-');
-  return `${d}/${m}/${y}`;
-}
-
-function getStatus(dias) {
-  if (dias < 0) return { cls: 'red', label: 'Vencido', emoji: '🔴' };
-  if (dias <= 7) return { cls: 'red', label: `Vence em ${dias}d`, emoji: '🔴' };
-  if (dias <= 30) return { cls: 'amber', label: `Vence em ${dias}d`, emoji: '🟡' };
-  if (dias <= 7) return { cls: 'red', label: `Esta semana`, emoji: '🟢' };
-  return { cls: 'green', label: 'Em dia', emoji: '🟢' };
-}
-
-function getSegClass(seg) {
-  const m = { 'CD': 'cd', 'Varejo': 'varejo', 'Motel': 'motel', 'Hotel': 'hotel', 'Gestão': '' };
-  return m[seg] || '';
-}
-
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-
-function toast(msg, tipo = 'success') {
-  const el = document.createElement('div');
-  el.className = `toast ${tipo}`;
-  const icons = { success:'✅', warning:'⚠️', error:'❌', info:'ℹ️' };
-  el.innerHTML = `<span>${icons[tipo]||'ℹ️'}</span> ${msg}`;
-  document.getElementById('toast-container').appendChild(el);
-  setTimeout(() => el.remove(), 4000);
-}
-
-function salvar() {
-  localStorage.setItem('rh_treinamentos', JSON.stringify(treinamentos));
-}
-
-// ─── NAVEGAÇÃO ───────────────────────────────────────────────────────────────
-const titles = {
-  dashboard: ['Dashboard', 'Visão geral de todos os treinamentos'],
-  treinamentos: ['Todos os Treinamentos', 'Gerencie os treinamentos de todas as unidades'],
-  alertas: ['Central de Alertas', 'Pré-visualização dos e-mails a serem enviados'],
-  configuracoes: ['Configurações', 'Configure os parâmetros do sistema'],
-  sobre: ['Como usar', 'Guia rápido do sistema']
-};
-
-function showView(name) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('view-' + name).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => {
-    if (n.getAttribute('onclick')?.includes(name)) n.classList.add('active');
-  });
-  const t = titles[name] || [name, ''];
-  document.getElementById('topbar-title').textContent = t[0];
-  document.getElementById('topbar-sub').textContent = t[1];
-  if (name === 'dashboard') renderDashboard();
-  if (name === 'treinamentos') renderTabela();
-  if (name === 'configuracoes') carregarConfig();
-}
-
-// ─── MODAL ───────────────────────────────────────────────────────────────────
-function abrirModal(id = null) {
-  document.getElementById('modal-overlay').classList.add('open');
-  document.getElementById('edit-id').value = id || '';
-  if (id) {
-    const t = treinamentos.find(x => x.id === id);
-    document.getElementById('modal-title').textContent = 'Editar Treinamento';
-    document.getElementById('f-empresa').value = t.empresa;
-    document.getElementById('f-segmento').value = t.segmento;
-    document.getElementById('f-tipo').value = t.tipo === t.tipoCustom ? 'Outro' : t.tipo;
-    document.getElementById('f-outro').value = t.tipoCustom || '';
-    document.getElementById('f-data').value = t.dataRealizacao;
-    document.getElementById('f-periodo').value = t.periodo;
-    document.getElementById('f-gestor').value = t.gestor;
-    document.getElementById('f-email').value = t.emailGestor;
-    document.getElementById('f-obs').value = t.obs || '';
-    toggleOutro();
-  } else {
-    document.getElementById('modal-title').textContent = 'Novo Treinamento';
-    ['f-empresa','f-outro','f-gestor','f-email','f-obs'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('f-segmento').value = '';
-    document.getElementById('f-tipo').value = '';
-    document.getElementById('f-data').value = '';
-    document.getElementById('f-periodo').value = '12';
-    document.getElementById('f-outro-wrap').style.display = 'none';
-  }
-}
-
-function fecharModal() { document.getElementById('modal-overlay').classList.remove('open'); }
-function fecharModalSeFora(e) { if (e.target.id === 'modal-overlay') fecharModal(); }
-function toggleOutro() {
-  const v = document.getElementById('f-tipo').value;
-  document.getElementById('f-outro-wrap').style.display = v === 'Outro' ? 'block' : 'none';
-}
-document.getElementById('f-tipo').addEventListener('change', toggleOutro);
-
-function salvarTreinamento() {
-  const empresa = document.getElementById('f-empresa').value.trim();
-  const segmento = document.getElementById('f-segmento').value;
-  const tipoSel = document.getElementById('f-tipo').value;
-  const tipoCustom = document.getElementById('f-outro').value.trim();
-  const tipo = tipoSel === 'Outro' ? tipoCustom : tipoSel;
-  const dataRealizacao = document.getElementById('f-data').value;
-  const periodo = parseInt(document.getElementById('f-periodo').value);
-  const gestor = document.getElementById('f-gestor').value.trim();
-  const emailGestor = document.getElementById('f-email').value.trim();
-  const obs = document.getElementById('f-obs').value.trim();
-
-  if (!empresa || !segmento || !tipo || !dataRealizacao || !gestor || !emailGestor) {
-    toast('Preencha todos os campos obrigatórios (*)', 'error'); return;
-  }
-
-  const vencimento = addMeses(dataRealizacao, periodo);
-  const editId = document.getElementById('edit-id').value;
-
-  if (editId) {
-    const idx = treinamentos.findIndex(t => t.id === editId);
-    treinamentos[idx] = { ...treinamentos[idx], empresa, segmento, tipo, tipoCustom, dataRealizacao, periodo, vencimento, gestor, emailGestor, obs };
-    toast('Treinamento atualizado com sucesso!');
-  } else {
-    treinamentos.push({ id: uid(), empresa, segmento, tipo, tipoCustom, dataRealizacao, periodo, vencimento, gestor, emailGestor, obs });
-    toast('Treinamento cadastrado com sucesso!');
-  }
-
-  salvar();
-  fecharModal();
-  renderDashboard();
-  renderTabela();
-  atualizarBadges();
-}
-
-function excluirTreinamento(id) {
-  if (!confirm('Deseja excluir este treinamento?')) return;
-  treinamentos = treinamentos.filter(t => t.id !== id);
-  salvar();
-  renderDashboard();
-  renderTabela();
-  atualizarBadges();
-  toast('Treinamento excluído.', 'warning');
-}
-
-// ─── RENDER DASHBOARD ────────────────────────────────────────────────────────
-function renderDashboard() {
-  const hoje = new Date(); hoje.setHours(0,0,0,0);
-  let total = 0, ok = 0, warn = 0, danger = 0;
-  const alertRow = [];
-
-  treinamentos.forEach(t => {
-    const dias = diffDias(t.vencimento);
-    total++;
-    if (dias < 0 || dias <= 7) danger++;
-    else if (dias <= 30) warn++;
-    else ok++;
-    if (dias <= 30) alertRow.push({ ...t, dias });
-  });
-
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-ok').textContent = ok;
-  document.getElementById('stat-warn').textContent = warn;
-  document.getElementById('stat-danger').textContent = danger;
-
-  // segmentos
-  const segs = ['CD','Varejo','Motel','Hotel','Gestão'];
-  const segNames = { CD:'CDs / Distribuidoras', Varejo:'Varejo', Motel:'Motel Afrodite', Hotel:'Hotel Metropolitan', Gestão:'Gestão' };
-  const segEmoji = { CD:'🏭', Varejo:'🛒', Motel:'🌙', Hotel:'🏨', Gestão:'👔' };
-  const grid = document.getElementById('seg-grid');
-  grid.innerHTML = '';
-  segs.forEach(seg => {
-    const items = treinamentos.filter(t => t.segmento === seg);
-    if (items.length === 0) return;
-    const reds = items.filter(t => { const d=diffDias(t.vencimento); return d<0||d<=7; }).length;
-    const ambs = items.filter(t => { const d=diffDias(t.vencimento); return d>7&&d<=30; }).length;
-    const color = reds > 0 ? 'var(--red-br)' : ambs > 0 ? 'var(--amber-br)' : 'var(--green-br)';
-    grid.innerHTML += `
-      <div class="stat-card" style="cursor:pointer" onclick="filtrar(null,'${seg}');showView('treinamentos')">
-        <div style="font-size:22px;margin-bottom:6px;">${segEmoji[seg]}</div>
-        <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:${color}">${items.length}</div>
-        <div style="font-size:12.5px;font-weight:600;color:var(--text);margin-top:2px;">${segNames[seg]}</div>
-        ${reds>0?`<div style="font-size:11px;color:var(--red);margin-top:4px;">🔴 ${reds} urgente(s)</div>`:''}
-        ${ambs>0&&reds===0?`<div style="font-size:11px;color:var(--amber);margin-top:4px;">🟡 ${ambs} atenção</div>`:''}
-        ${reds===0&&ambs===0?`<div style="font-size:11px;color:var(--green);margin-top:4px;">🟢 Tudo em dia</div>`:''}
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${color};border-radius:12px 12px 0 0;"></div>
-      </div>`;
-  });
-
-  // tabela alerta 30 dias
-  const tb = document.getElementById('tb-dashboard');
-  alertRow.sort((a,b) => a.dias - b.dias);
-  if (alertRow.length === 0) {
-    tb.innerHTML = '';
-    document.getElementById('dashboard-empty').style.display = 'block';
-  } else {
-    document.getElementById('dashboard-empty').style.display = 'none';
-    tb.innerHTML = alertRow.map(t => {
-      const st = getStatus(t.dias);
-      return `<tr>
-        <td><strong>${t.empresa}</strong></td>
-        <td>${t.tipo}</td>
-        <td><span class="empresa-tag ${getSegClass(t.segmento)}">${t.segmento}</span></td>
-        <td>${fmtData(t.vencimento)}</td>
-        <td><span class="status-badge ${st.cls}"><span class="status-dot"></span>${st.label}</span></td>
-        <td><span class="dias-badge ${st.cls}">${t.dias < 0 ? 'Vencido há '+Math.abs(t.dias)+'d' : t.dias+'d'}</span></td>
-      </tr>`;
-    }).join('');
-  }
-}
-
-// ─── RENDER TABELA ───────────────────────────────────────────────────────────
-function renderTabela() {
-  const busca = (document.getElementById('search-input')?.value || '').toLowerCase();
-  let lista = treinamentos.filter(t => {
-    const matchSeg = filtroAtivo === 'todos' || t.segmento === filtroAtivo;
-    const matchBusca = !busca || t.empresa.toLowerCase().includes(busca) || t.tipo.toLowerCase().includes(busca);
-    return matchSeg && matchBusca;
-  });
-  lista.sort((a,b) => diffDias(a.vencimento) - diffDias(b.vencimento));
-  const tb = document.getElementById('tb-lista');
-  const empty = document.getElementById('lista-empty');
-  document.getElementById('count-label').textContent = `${lista.length} registro(s)`;
-
-  if (lista.length === 0) {
-    tb.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
-  tb.innerHTML = lista.map(t => {
-    const dias = diffDias(t.vencimento);
-    const st = getStatus(dias);
-    return `<tr>
-      <td><strong>${t.empresa}</strong></td>
-      <td>${t.tipo}</td>
-      <td><span class="empresa-tag ${getSegClass(t.segmento)}">${t.segmento}</span></td>
-      <td style="font-size:13px;">${t.gestor}</td>
-      <td style="font-size:12px;color:var(--muted);">${t.emailGestor}</td>
-      <td>${fmtData(t.dataRealizacao)}</td>
-      <td>${fmtData(t.vencimento)}</td>
-      <td><span class="status-badge ${st.cls}"><span class="status-dot"></span>${st.emoji} ${st.label}</span></td>
-      <td>
-        <div class="action-btns">
-          <button class="btn btn-outline btn-sm btn-icon" onclick="verEmailAlerta('${t.id}')" title="Ver e-mail de alerta">📧</button>
-          <button class="btn btn-outline btn-sm btn-icon" onclick="abrirModal('${t.id}')" title="Editar">✏️</button>
-          <button class="btn btn-outline btn-sm btn-icon" onclick="excluirTreinamento('${t.id}')" title="Excluir" style="color:var(--red-br);border-color:var(--red-br);">🗑️</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-function filtrar(btn, seg) {
-  filtroAtivo = seg;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderTabela();
-}
-
-// ─── ALERTAS ─────────────────────────────────────────────────────────────────
-function verificarAlertas() {
-  const c = JSON.parse(localStorage.getItem('rh_config') || '{"dias1":30,"dias2":7}');
-  const d1 = c.dias1 || 30;
-  const d2 = c.dias2 || 7;
-
-  const alertas = treinamentos
-    .map(t => ({ ...t, dias: diffDias(t.vencimento) }))
-    .filter(t => t.dias <= d1)
-    .sort((a,b) => a.dias - b.dias);
-
-  const container = document.getElementById('alertas-container');
-  atualizarBadges();
-
-  if (alertas.length === 0) {
-    container.innerHTML = `<div class="empty-state">
-      <div class="es-icon">🎉</div>
-      <h3>Nenhum alerta no momento!</h3>
-      <p>Todos os treinamentos estão em dia. Nenhum vence nos próximos ${d1} dias.</p>
-    </div>`;
-    showView('alertas');
-    toast('Verificação concluída. Nenhum alerta!', 'success');
-    return;
-  }
-
-  container.innerHTML = alertas.map(t => {
-    const isUrgente = t.dias <= d2;
-    const cls = isUrgente ? 'red' : 'amber';
-    const label = isUrgente
-      ? (t.dias < 0 ? `VENCIDO há ${Math.abs(t.dias)} dias` : `URGENTE — vence em ${t.dias} dias`)
-      : `Vence em ${t.dias} dias`;
-    const assunto = isUrgente
-      ? `🚨 URGENTE: Treinamento ${t.tipo} — ${t.empresa} vence em ${t.dias < 0 ? 'VENCIDO' : t.dias+'d'}`
-      : `⚠️ Atenção: Treinamento ${t.tipo} — ${t.empresa} vence em ${t.dias} dias`;
-    const corpo = gerarCorpoEmail(t, isUrgente);
-    return `
-      <div class="alerta-card">
-        <div class="alerta-header ${cls}">
-          <div>
-            <div class="alerta-title ${cls}">${isUrgente ? '🔴' : '🟡'} ${label} — ${t.empresa}</div>
-            <div style="font-size:12px;margin-top:3px;color:var(--${cls === 'red' ? 'red' : 'amber'});">
-              Treinamento: <strong>${t.tipo}</strong> &nbsp;|&nbsp; Segmento: <strong>${t.segmento}</strong> &nbsp;|&nbsp; 
-              Gestor: <strong>${t.gestor}</strong> &nbsp;|&nbsp; Vencimento: <strong>${fmtData(t.vencimento)}</strong>
-            </div>
-          </div>
-          <button class="btn btn-sm" style="background:${cls==='red'?'var(--red-br)':'var(--amber-br)'};color:white;white-space:nowrap;flex-shrink:0;" 
-            onclick="verEmailPreview('${t.id}')">
-            📧 Ver e-mail
-          </button>
-        </div>
-        <div class="alerta-body">
-          <strong>Para:</strong> ${t.emailGestor}<br>
-          <strong>Assunto:</strong> ${assunto}<br><br>
-          <em style="color:var(--muted);">${corpo.substring(0, 180)}...</em>
-          <br><br>
-          <button class="btn btn-primary btn-sm" onclick="verEmailPreview('${t.id}')">Ver e-mail completo</button>
-        </div>
-      </div>`;
-  }).join('');
-
-  showView('alertas');
-  toast(`${alertas.length} alerta(s) encontrado(s)!`, alertas.some(a=>a.dias<=d2) ? 'error' : 'warning');
-}
-
-function gerarCorpoEmail(t, isUrgente) {
-  const c = JSON.parse(localStorage.getItem('rh_config') || '{"nomeRH":"RH Central"}');
-  if (isUrgente) {
-    return `Prezado(a) ${t.gestor},\n\n` +
-      `ATENÇÃO URGENTE: O treinamento ${t.tipo} da unidade ${t.empresa} ` +
-      (t.dias < 0 ? `encontra-se VENCIDO desde ${fmtData(t.vencimento)}.` :
-        `vencerá em ${t.dias} dias, no dia ${fmtData(t.vencimento)}.`) +
-      `\n\nSe o treinamento não for realizado/renovado imediatamente, a empresa estará em não conformidade, sujeita a autuações e multas trabalhistas.\n\n` +
-      `Por favor, confirme o agendamento com urgência e informe o RH Central.\n\nAtenciosamente,\n${c.nomeRH}`;
-  }
-  return `Prezado(a) ${t.gestor},\n\n` +
-    `Informamos que o treinamento ${t.tipo} da unidade ${t.empresa} ` +
-    `terá seu prazo de validade vencendo em ${t.dias} dias, na data de ${fmtData(t.vencimento)}.\n\n` +
-    `Por favor, providencie o agendamento e realização do treinamento dentro do prazo, ` +
-    `garantindo a conformidade da unidade.\n\nQualquer dúvida, entre em contato com o RH Central.\n\nAtenciosamente,\n${c.nomeRH}`;
-}
-
-function verEmailPreview(id) {
-  const t = treinamentos.find(x => x.id === id);
-  if (!t) return;
-  const dias = diffDias(t.vencimento);
-  const isUrgente = dias <= (config.dias2 || 7);
-  verEmailModal(t, isUrgente);
-}
-
-function verEmailAlerta(id) {
-  const t = treinamentos.find(x => x.id === id);
-  if (!t) return;
-  const dias = diffDias(t.vencimento);
-  const isUrgente = dias <= (config.dias2 || 7);
-  verEmailModal(t, isUrgente);
-}
-
-function verEmailModal(t, isUrgente) {
-  const c = JSON.parse(localStorage.getItem('rh_config') || '{"nomeRH":"RH Central","emailRH":""}');
-  const dias = diffDias(t.vencimento);
-  const assunto = isUrgente
-    ? `🚨 URGENTE: Treinamento ${t.tipo} — ${t.empresa}`
-    : `⚠️ Atenção: Treinamento ${t.tipo} — ${t.empresa} vence em ${dias} dias`;
-  const corpo = gerarCorpoEmail(t, isUrgente).replace(/\n/g, '<br>');
-  const cor = isUrgente ? '#991B1B' : '#92400E';
-  const bg = isUrgente ? '#FEE2E2' : '#FEF3C7';
-
-  emailParaCopiar = `Para: ${t.emailGestor}\nAssunto: ${assunto}\n\n${gerarCorpoEmail(t, isUrgente)}`;
-
-  document.getElementById('email-preview-content').innerHTML = `
-    <div class="ep-header" style="background:${cor};">
-      ${isUrgente ? '🚨 URGENTE' : '⚠️ ALERTA'} — ${t.tipo} | ${t.empresa}
-    </div>
-    <div class="ep-meta">
-      <strong>Para:</strong> <span>${t.emailGestor}</span><br>
-      ${c.emailRH ? `<strong>Cc:</strong> <span>${c.emailRH} (RH Central)</span><br>` : ''}
-      <strong>Assunto:</strong> <span>${assunto}</span>
-    </div>
-    <div style="background:${bg};border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:13px;">
-      📅 Vencimento: <strong>${fmtData(t.vencimento)}</strong> &nbsp;|&nbsp; 
-      ${dias < 0 ? `<span style="color:${cor};font-weight:700;">VENCIDO há ${Math.abs(dias)} dias</span>` : `<span style="color:${cor};font-weight:700;">${dias} dias restantes</span>`}
-    </div>
-    <div style="line-height:1.8;font-size:14px;">${corpo}</div>`;
-
-  document.getElementById('modal-email-overlay').classList.add('open');
-}
-
-function copiarEmail() {
-  navigator.clipboard.writeText(emailParaCopiar).then(() => {
-    toast('E-mail copiado para a área de transferência!', 'success');
-  }).catch(() => {
-    toast('Não foi possível copiar. Tente manualmente.', 'error');
-  });
-}
-
-// ─── BADGES ──────────────────────────────────────────────────────────────────
-function atualizarBadges() {
-  const c = JSON.parse(localStorage.getItem('rh_config') || '{"dias1":30}');
-  const urgentes = treinamentos.filter(t => {
-    const d = diffDias(t.vencimento);
-    return d <= (c.dias1 || 30);
-  }).length;
-  document.getElementById('badge-total').textContent = treinamentos.length;
-  document.getElementById('badge-alertas').textContent = urgentes;
-  if (urgentes === 0) document.getElementById('badge-alertas').style.display = 'none';
-  else document.getElementById('badge-alertas').style.display = 'inline-block';
-}
-
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-function carregarConfig() {
-  const c = JSON.parse(localStorage.getItem('rh_config') || '{}');
-  document.getElementById('cfg-email-rh').value = c.emailRH || '';
-  document.getElementById('cfg-nome-rh').value = c.nomeRH || 'RH Central';
-  document.getElementById('cfg-dias-1').value = c.dias1 || 30;
-  document.getElementById('cfg-dias-2').value = c.dias2 || 7;
-}
-
-function salvarConfig() {
-  config = {
-    emailRH: document.getElementById('cfg-email-rh').value.trim(),
-    nomeRH: document.getElementById('cfg-nome-rh').value.trim() || 'RH Central',
-    dias1: parseInt(document.getElementById('cfg-dias-1').value),
-    dias2: parseInt(document.getElementById('cfg-dias-2').value)
-  };
-  localStorage.setItem('rh_config', JSON.stringify(config));
-  atualizarBadges();
-  toast('Configurações salvas!', 'success');
-}
-
-function exportarDados() {
-  const data = JSON.stringify({ treinamentos, config }, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'rh_treinamentos_backup.json';
-  a.click();
-  toast('Dados exportados com sucesso!', 'success');
-}
-
-function limparDados() {
-  if (!confirm('⚠️ Isso vai apagar TODOS os treinamentos cadastrados. Tem certeza?')) return;
-  if (!confirm('Confirme novamente: apagar tudo?')) return;
-  treinamentos = [];
-  salvar();
-  renderDashboard();
-  renderTabela();
-  atualizarBadges();
-  toast('Todos os dados foram apagados.', 'warning');
-}
-
-// ─── DADOS DE EXEMPLO ────────────────────────────────────────────────────────
-function carregarExemplos() {
-  if (treinamentos.length > 0) return;
-  const hoje = new Date();
-  function dtPassada(dias) {
-    const d = new Date(hoje);
-    d.setDate(d.getDate() - dias);
-    return d.toISOString().split('T')[0];
-  }
-  const exemplos = [
-    { empresa:'Distribuidora Alfa', segmento:'CD', tipo:'CIPA (NR-5)', dataRealizacao: dtPassada(335), periodo:12, gestor:'Carlos Mendes', emailGestor:'carlos@alfa.com.br' },
-    { empresa:'Distribuidora Beta', segmento:'CD', tipo:'SAST / SESMT', dataRealizacao: dtPassada(320), periodo:12, gestor:'Ana Lima', emailGestor:'ana@beta.com.br' },
-    { empresa:'Loja Centro', segmento:'Varejo', tipo:'CIPA (NR-5)', dataRealizacao: dtPassada(350), periodo:12, gestor:'Paulo Rocha', emailGestor:'paulo@lojacentro.com.br' },
-    { empresa:'Motel Afrodite', segmento:'Motel', tipo:'NR-35', dataRealizacao: dtPassada(10), periodo:12, gestor:'Fernanda Costa', emailGestor:'fernanda@afrodite.com.br' },
-    { empresa:'Hotel Metropolitan', segmento:'Hotel', tipo:'Primeiros Socorros', dataRealizacao: dtPassada(380), periodo:12, gestor:'Roberto Dias', emailGestor:'roberto@metropolitan.com.br' },
-    { empresa:'Distribuidora Gama', segmento:'CD', tipo:'Direção Defensiva', dataRealizacao: dtPassada(50), periodo:6, gestor:'Márcia Silva', emailGestor:'marcia@gama.com.br' },
-    { empresa:'Loja Norte', segmento:'Varejo', tipo:'SAST / SESMT', dataRealizacao: dtPassada(15), periodo:12, gestor:'Lucas Ferreira', emailGestor:'lucas@lojanorte.com.br' },
-    { empresa:'Hotel Metropolitan', segmento:'Hotel', tipo:'Formação de Novo Gestor', dataRealizacao: dtPassada(5), periodo:24, gestor:'Roberto Dias', emailGestor:'roberto@metropolitan.com.br' },
-  ];
-  treinamentos = exemplos.map(e => ({
-    id: uid(),
-    ...e,
-    tipoCustom: '',
-    obs: '',
-    vencimento: addMeses(e.dataRealizacao, e.periodo)
-  }));
-  salvar();
-}
-
-// ─── INIT ────────────────────────────────────────────────────────────────────
-carregarExemplos();
-renderDashboard();
-atualizarBadges();
+let treinamentos=JSON.parse(localStorage.getItem('rh_treinamentos')||'[]');
+let config=JSON.parse(localStorage.getItem('rh_config')||'{"emailRH":"","nomeRH":"RH Central","dias1":30,"dias2":7}');
+let filtroAtivo='todos';
+let emailParaCopiar='';
+function addMeses(dateStr,meses){const d=new Date(dateStr+'T12:00:00');d.setMonth(d.getMonth()+meses);return d.toISOString().split('T')[0];}
+function diffDias(dateStr){const hoje=new Date();hoje.setHours(0,0,0,0);return Math.ceil((new Date(dateStr+'T12:00:00')-hoje)/86400000);}
+function fmtData(dateStr){if(!dateStr)return'-';const[y,m,d]=dateStr.split('-');return`${d}/${m}/${y}`;}
+function getStatus(dias){if(dias<0)return{cls:'red',label:'Vencido',emoji:'🔴'};if(dias<=7)return{cls:'red',label:`${dias}d`,emoji:'🔴'};if(dias<=30)return{cls:'amber',label:`${dias}d`,emoji:'🟡'};return{cls:'green',label:'Em dia',emoji:'🟢'};}
+function getSegClass(seg){return{CD:'cd',Varejo:'varejo',Motel:'motel',Hotel:'hotel'}[seg]||'';}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function salvar(){localStorage.setItem('rh_treinamentos',JSON.stringify(treinamentos));}
+function toast(msg,tipo='success'){const el=document.createElement('div');el.className=`toast ${tipo}`;const icons={success:'✅',warning:'⚠️',error:'❌',info:'ℹ️'};el.innerHTML=`<span>${icons[tipo]||'ℹ️'}</span> ${msg}`;document.getElementById('toast-container').appendChild(el);setTimeout(()=>el.remove(),4000);}
+const titles={dashboard:['Dashboard','Visão geral de todos os treinamentos'],treinamentos:['Treinamentos','Gerencie todas as unidades'],alertas:['Alertas','E-mails de vencimento'],configuracoes:['Configurações','Parâmetros do sistema'],sobre:['Como usar','Guia rápido']};
+function showView(name){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.nav-item,.bn-item').forEach(n=>n.classList.remove('active'));document.getElementById('view-'+name).classList.add('active');document.querySelectorAll('.nav-item,.bn-item').forEach(n=>{if(n.getAttribute('onclick')?.includes(`'${name}'`))n.classList.add('active');});const t=titles[name]||[name,''];document.getElementById('topbar-title').textContent=t[0];document.getElementById('topbar-sub').textContent=t[1];if(name==='dashboard')renderDashboard();if(name==='treinamentos')renderTabela();if(name==='configuracoes')carregarConfig();}
+function abrirModal(id=null){document.getElementById('modal-overlay').classList.add('open');document.getElementById('edit-id').value=id||'';if(id){const t=treinamentos.find(x=>x.id===id);document.getElementById('modal-title').textContent='Editar Treinamento';document.getElementById('f-empresa').value=t.empresa;document.getElementById('f-segmento').value=t.segmento;document.getElementById('f-tipo').value=t.tipo===t.tipoCustom?'Outro':t.tipo;document.getElementById('f-outro').value=t.tipoCustom||'';document.getElementById('f-data').value=t.dataRealizacao;document.getElementById('f-periodo').value=t.periodo;document.getElementById('f-gestor').value=t.gestor;document.getElementById('f-email').value=t.emailGestor;document.getElementById('f-obs').value=t.obs||'';toggleOutro();}else{document.getElementById('modal-title').textContent='Novo Treinamento';['f-empresa','f-outro','f-gestor','f-email','f-obs'].forEach(i=>document.getElementById(i).value='');['f-segmento','f-tipo'].forEach(i=>document.getElementById(i).value='');document.getElementById('f-data').value='';document.getElementById('f-periodo').value='12';document.getElementById('f-outro-wrap').style.display='none';}}
+function fecharModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function fecharModalSeFora(e){if(e.target.id==='modal-overlay')fecharModal();}
+function toggleOutro(){document.getElementById('f-outro-wrap').style.display=document.getElementById('f-tipo').value==='Outro'?'block':'none';}
+document.getElementById('f-tipo').addEventListener('change',toggleOutro);
+function salvarTreinamento(){const empresa=document.getElementById('f-empresa').value.trim();const segmento=document.getElementById('f-segmento').value;const tipoSel=document.getElementById('f-tipo').value;const tipoCustom=document.getElementById('f-outro').value.trim();const tipo=tipoSel==='Outro'?tipoCustom:tipoSel;const dataRealizacao=document.getElementById('f-data').value;const periodo=parseInt(document.getElementById('f-periodo').value);const gestor=document.getElementById('f-gestor').value.trim();const emailGestor=document.getElementById('f-email').value.trim();const obs=document.getElementById('f-obs').value.trim();if(!empresa||!segmento||!tipo||!dataRealizacao||!gestor||!emailGestor){toast('Preencha todos os campos (*)','error');return;}const vencimento=addMeses(dataRealizacao,periodo);const editId=document.getElementById('edit-id').value;if(editId){const idx=treinamentos.findIndex(t=>t.id===editId);treinamentos[idx]={...treinamentos[idx],empresa,segmento,tipo,tipoCustom,dataRealizacao,periodo,vencimento,gestor,emailGestor,obs};toast('Treinamento atualizado!');}else{treinamentos.push({id:uid(),empresa,segmento,tipo,tipoCustom,dataRealizacao,periodo,vencimento,gestor,emailGestor,obs});toast('Treinamento cadastrado!');}salvar();fecharModal();renderDashboard();renderTabela();atualizarBadges();}
+function excluirTreinamento(id){if(!confirm('Excluir este treinamento?'))return;treinamentos=treinamentos.filter(t=>t.id!==id);salvar();renderDashboard();renderTabela();atualizarBadges();toast('Treinamento excluído.','warning');}
+function renderDashboard(){let total=0,ok=0,warn=0,danger=0;const alertRow=[];treinamentos.forEach(t=>{const dias=diffDias(t.vencimento);total++;if(dias<0||dias<=7)danger++;else if(dias<=30)warn++;else ok++;if(dias<=30)alertRow.push({...t,dias});});document.getElementById('stat-total').textContent=total;document.getElementById('stat-ok').textContent=ok;document.getElementById('stat-warn').textContent=warn;document.getElementById('stat-danger').textContent=danger;const segs=['CD','Varejo','Motel','Hotel','Gestão'];const segNames={CD:'CDs',Varejo:'Varejo',Motel:'Motel Afrodite',Hotel:'Hotel Metropolitan',Gestão:'Gestão'};const segEmoji={CD:'🏭',Varejo:'🛒',Motel:'🌙',Hotel:'🏨',Gestão:'👔'};const grid=document.getElementById('seg-grid');grid.innerHTML='';segs.forEach(seg=>{const items=treinamentos.filter(t=>t.segmento===seg);if(!items.length)return;const reds=items.filter(t=>{const d=diffDias(t.vencimento);return d<0||d<=7;}).length;const ambs=items.filter(t=>{const d=diffDias(t.vencimento);return d>7&&d<=30;}).length;const color=reds>0?'var(--red-br)':ambs>0?'var(--amber-br)':'var(--green-br)';grid.innerHTML+=`<div class="stat-card" style="cursor:pointer;position:relative;" onclick="filtrar(null,'${seg}');showView('treinamentos')"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:${color};border-radius:12px 12px 0 0;"></div><div style="font-size:20px;margin-bottom:4px;">${segEmoji[seg]}</div><div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:${color};">${items.length}</div><div style="font-size:12px;font-weight:600;color:var(--text);margin-top:2px;">${segNames[seg]}</div>${reds>0?`<div style="font-size:11px;color:var(--red);margin-top:3px;">🔴 ${reds} urgente(s)</div>`:''}${ambs>0&&reds===0?`<div style="font-size:11px;color:var(--amber);margin-top:3px;">🟡 ${ambs} atenção</div>`:''}${reds===0&&ambs===0?`<div style="font-size:11px;color:var(--green);margin-top:3px;">🟢 Em dia</div>`:''}</div>`;});alertRow.sort((a,b)=>a.dias-b.dias);const tb=document.getElementById('tb-dashboard');const cl=document.getElementById('cl-dashboard');if(!alertRow.length){tb.innerHTML='';cl.innerHTML='';document.getElementById('dashboard-empty').style.display='block';}else{document.getElementById('dashboard-empty').style.display='none';tb.innerHTML=alertRow.map(t=>{const st=getStatus(t.dias);return`<tr><td><strong>${t.empresa}</strong></td><td>${t.tipo}</td><td><span class="empresa-tag ${getSegClass(t.segmento)}">${t.segmento}</span></td><td>${fmtData(t.vencimento)}</td><td><span class="status-badge ${st.cls}"><span class="status-dot"></span>${st.emoji} ${st.label}</span></td><td><span class="dias-badge ${st.cls}">${t.dias<0?'Venc. há '+Math.abs(t.dias)+'d':t.dias+'d'}</span></td></tr>`;}).join('');cl.innerHTML=alertRow.map(t=>{const st=getStatus(t.dias);return`<div class="tr-card"><div class="tr-card-top"><div><div class="tr-card-title">${t.empresa}</div><div class="tr-card-tipo">${t.tipo}</div></div><span class="status-badge ${st.cls}"><span class="status-dot"></span>${st.emoji}</span></div><div class="tr-card-row"><span>📅 ${fmtData(t.vencimento)}</span><span class="empresa-tag ${getSegClass(t.segmento)}">${t.segmento}</span></div></div>`;}).join('');}}
+function renderTabela(){const busca=(document.getElementById('search-input')?.value||'').toLowerCase();let lista=treinamentos.filter(t=>{const matchSeg=filtroAtivo==='todos'||t.segmento===filtroAtivo;const matchBusca=!busca||t.empresa.toLowerCase().includes(busca)||t.tipo.toLowerCase().includes(busca);return matchSeg&&matchBusca;}).sort((a,b)=>diffDias(a.vencimento)-diffDias(b.vencimento));const tb=document.getElementById('tb-lista');const cl=document.getElementById('cl-lista');const empty=document.getElementById('lista-empty');document.getElementById('count-label').textContent=`${lista.length} registro(s)`;if(!lista.length){tb.innerHTML='';cl.innerHTML='';empty.style.display='block';return;}empty.style.display='none';tb.innerHTML=lista.map(t=>{const dias=diffDias(t.vencimento);const st=getStatus(dias);return`<tr><td><strong>${t.empresa}</strong></td><td>${t.tipo}</td><td><span class="empresa-tag ${getSegClass(t.segmento)}">${t.segmento}</span></td><td style="font-size:12px;">${t.gestor}</td><td>${fmtData(t.dataRealizacao)}</td><td>${fmtData(t.vencimento)}</td><td><span class="status-badge ${st.cls}"><span class="status-dot"></span>${st.emoji} ${st.label}</span></td><td><div class="action-btns"><button class="btn btn-outline btn-sm btn-icon" onclick="verEmailAlerta('${t.id}')" title="E-mail">📧</button><button class="btn btn-outline btn-sm btn-icon" onclick="abrirModal('${t.id}')" title="Editar">✏️</button><button class="btn btn-outline btn-sm btn-icon" onclick="excluirTreinamento('${t.id}')" title="Excluir" style="color:var(--red-br);">🗑️</button></div></td></tr>`;}).join('');cl.innerHTML=lista.map(t=>{const dias=diffDias(t.vencimento);const st=getStatus(dias);return`<div class="tr-card"><div class="tr-card-top"><div><div class="tr-card-title">${t.empresa}</div><div class="tr-card-tipo">${t.tipo}</div></div><span class="status-badge ${st.cls}"><span class="status-dot"></span>${st.emoji} ${st.label}</span></div><div class="tr-card-row"><span>👤 ${t.gestor}</span><span class="empresa-tag ${getSegClass(t.segmento)}">${t.segmento}</span><span>📅 ${fmtData(t.vencimento)}</span></div><div class="tr-card-actions"><button class="btn btn-outline btn-sm" onclick="verEmailAlerta('${t.id}')">📧 E-mail</button><button class="btn btn-outline btn-sm" onclick="abrirModal('${t.id}')">✏️ Editar</button><button class="btn btn-outline btn-sm" onclick="excluirTreinamento('${t.id}')" style="color:var(--red-br);">🗑️</button></div></div>`;}).join('');}
+function filtrar(btn,seg){filtroAtivo=seg;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderTabela();}
+function gerarCorpoEmail(t,isUrgente){const c=JSON.parse(localStorage.getItem('rh_config')||'{"nomeRH":"RH Central"}');if(isUrgente)return`Prezado(a) ${t.gestor},\n\nATENÇÃO URGENTE: O treinamento ${t.tipo} da unidade ${t.empresa} `+(t.dias<0?`encontra-se VENCIDO desde ${fmtData(t.vencimento)}.`:`vencerá em ${t.dias} dias, no dia ${fmtData(t.vencimento)}.`)+`\n\nSe não for realizado imediatamente, a empresa estará em não conformidade, sujeita a autuações e multas.\n\nConfirme o agendamento com urgência.\n\nAtenciosamente,\n${c.nomeRH}`;return`Prezado(a) ${t.gestor},\n\nInformamos que o treinamento ${t.tipo} da unidade ${t.empresa} vencerá em ${t.dias} dias, na data de ${fmtData(t.vencimento)}.\n\nPor favor, providencie o agendamento dentro do prazo.\n\nAtenciosamente,\n${c.nomeRH}`;}
+function verificarAlertas(){const c=JSON.parse(localStorage.getItem('rh_config')||'{"dias1":30,"dias2":7}');const d1=c.dias1||30,d2=c.dias2||7;const alertas=treinamentos.map(t=>({...t,dias:diffDias(t.vencimento)})).filter(t=>t.dias<=d1).sort((a,b)=>a.dias-b.dias);const container=document.getElementById('alertas-container');atualizarBadges();if(!alertas.length){container.innerHTML=`<div class="empty-state"><div class="es-icon">🎉</div><h3>Tudo em dia!</h3><p>Nenhum treinamento vence nos próximos ${d1} dias.</p></div>`;showView('alertas');toast('Nenhum alerta!','success');return;}container.innerHTML=alertas.map(t=>{const isUrgente=t.dias<=d2;const cls=isUrgente?'red':'amber';const label=isUrgente?(t.dias<0?`VENCIDO há ${Math.abs(t.dias)} dias`:`URGENTE — vence em ${t.dias} dias`):`Vence em ${t.dias} dias`;return`<div class="alerta-card"><div class="alerta-header ${cls}"><div><div class="alerta-title ${cls}">${isUrgente?'🔴':'🟡'} ${label} — ${t.empresa}</div><div style="font-size:11px;margin-top:2px;">Treinamento: <strong>${t.tipo}</strong> | Vencimento: <strong>${fmtData(t.vencimento)}</strong></div></div><button class="btn btn-sm" style="background:${cls==='red'?'var(--red-br)':'var(--amber-br)'};color:white;flex-shrink:0;" onclick="verEmailPreview('${t.id}')">📧 Ver e-mail</button></div><div class="alerta-body"><strong>Para:</strong> ${t.emailGestor}<br><strong>Gestor:</strong> ${t.gestor}<br><strong>Segmento:</strong> ${t.segmento}</div></div>`;}).join('');showView('alertas');toast(`${alertas.length} alerta(s)!`,alertas.some(a=>a.dias<=d2)?'error':'warning');}
+function verEmailPreview(id){const t=treinamentos.find(x=>x.id===id);if(!t)return;verEmailModal(t,diffDias(t.vencimento)<=(config.dias2||7));}
+function verEmailAlerta(id){const t=treinamentos.find(x=>x.id===id);if(!t)return;verEmailModal(t,diffDias(t.vencimento)<=(config.dias2||7));}
+function verEmailModal(t,isUrgente){const c=JSON.parse(localStorage.getItem('rh_config')||'{"nomeRH":"RH Central","emailRH":""}');const dias=diffDias(t.vencimento);const assunto=isUrgente?`🚨 URGENTE: ${t.tipo} — ${t.empresa}`:`⚠️ Atenção: ${t.tipo} — ${t.empresa} vence em ${dias} dias`;const corpo=gerarCorpoEmail(t,isUrgente).replace(/\n/g,'<br>');const cor=isUrgente?'#991B1B':'#92400E';const bg=isUrgente?'#FEE2E2':'#FEF3C7';emailParaCopiar=`Para: ${t.emailGestor}\nAssunto: ${assunto}\n\n${gerarCorpoEmail(t,isUrgente)}`;document.getElementById('email-preview-content').innerHTML=`<div class="ep-header" style="background:${cor};">${isUrgente?'🚨 URGENTE':'⚠️ ALERTA'} — ${t.tipo} | ${t.empresa}</div><div class="ep-meta"><strong>Para:</strong> <span>${t.emailGestor}</span><br>${c.emailRH?`<strong>Cc:</strong> <span>${c.emailRH}</span><br>`:''}<strong>Assunto:</strong> <span>${assunto}</span></div><div style="background:${bg};border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;">📅 Vencimento: <strong>${fmtData(t.vencimento)}</strong> | <span style="color:${cor};font-weight:700;">${dias<0?'VENCIDO há '+Math.abs(dias)+'d':dias+'d restantes'}</span></div><div style="line-height:1.8;font-size:13.5px;">${corpo}</div>`;document.getElementById('modal-email-overlay').classList.add('open');}
+function copiarEmail(){navigator.clipboard.writeText(emailParaCopiar).then(()=>toast('E-mail copiado!','success')).catch(()=>toast('Não foi possível copiar.','error'));}
+function atualizarBadges(){const c=JSON.parse(localStorage.getItem('rh_config')||'{"dias1":30}');const urgentes=treinamentos.filter(t=>diffDias(t.vencimento)<=(c.dias1||30)).length;document.getElementById('badge-total').textContent=treinamentos.length;['badge-alertas','bn-badge-alertas'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=urgentes;el.style.display=urgentes>0?'inline-block':'none';}});const bt=document.getElementById('bn-badge-total');if(bt){bt.textContent=treinamentos.length;bt.style.display=treinamentos.length>0?'inline-block':'none';}}
+function carregarConfig(){const c=JSON.parse(localStorage.getItem('rh_config')||'{}');document.getElementById('cfg-email-rh').value=c.emailRH||'';document.getElementById('cfg-nome-rh').value=c.nomeRH||'RH Central';document.getElementById('cfg-dias-1').value=c.dias1||30;document.getElementById('cfg-dias-2').value=c.dias2||7;}
+function salvarConfig(){config={emailRH:document.getElementById('cfg-email-rh').value.trim(),nomeRH:document.getElementById('cfg-nome-rh').value.trim()||'RH Central',dias1:parseInt(document.getElementById('cfg-dias-1').value),dias2:parseInt(document.getElementById('cfg-dias-2').value)};localStorage.setItem('rh_config',JSON.stringify(config));atualizarBadges();toast('Configurações salvas!','success');}
+function exportarDados(){const blob=new Blob([JSON.stringify({treinamentos,config},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='rh_treinamentos_backup.json';a.click();toast('Dados exportados!','success');}
+function limparDados(){if(!confirm('Apagar TODOS os treinamentos?'))return;if(!confirm('Confirmar exclusão total?'))return;treinamentos=[];salvar();renderDashboard();renderTabela();atualizarBadges();toast('Dados apagados.','warning');}
+function carregarExemplos(){if(treinamentos.length>0)return;const hoje=new Date();function dtPassada(dias){const d=new Date(hoje);d.setDate(d.getDate()-dias);return d.toISOString().split('T')[0];}const ex=[{empresa:'Distribuidora Alfa',segmento:'CD',tipo:'CIPA (NR-5)',dataRealizacao:dtPassada(335),periodo:12,gestor:'Carlos Mendes',emailGestor:'carlos@alfa.com.br'},{empresa:'Distribuidora Beta',segmento:'CD',tipo:'SAST / SESMT',dataRealizacao:dtPassada(320),periodo:12,gestor:'Ana Lima',emailGestor:'ana@beta.com.br'},{empresa:'Loja Centro',segmento:'Varejo',tipo:'CIPA (NR-5)',dataRealizacao:dtPassada(350),periodo:12,gestor:'Paulo Rocha',emailGestor:'paulo@lojacentro.com.br'},{empresa:'Motel Afrodite',segmento:'Motel',tipo:'NR-35',dataRealizacao:dtPassada(10),periodo:12,gestor:'Fernanda Costa',emailGestor:'fernanda@afrodite.com.br'},{empresa:'Hotel Metropolitan',segmento:'Hotel',tipo:'Primeiros Socorros',dataRealizacao:dtPassada(380),periodo:12,gestor:'Roberto Dias',emailGestor:'roberto@metropolitan.com.br'},{empresa:'Distribuidora Gama',segmento:'CD',tipo:'Direção Defensiva',dataRealizacao:dtPassada(50),periodo:6,gestor:'Márcia Silva',emailGestor:'marcia@gama.com.br'},{empresa:'Loja Norte',segmento:'Varejo',tipo:'SAST / SESMT',dataRealizacao:dtPassada(15),periodo:12,gestor:'Lucas Ferreira',emailGestor:'lucas@lojanorte.com.br'},{empresa:'Hotel Metropolitan',segmento:'Hotel',tipo:'Formação de Novo Gestor',dataRealizacao:dtPassada(5),periodo:24,gestor:'Roberto Dias',emailGestor:'roberto@metropolitan.com.br'}];treinamentos=ex.map(e=>({id:uid(),...e,tipoCustom:'',obs:'',vencimento:addMeses(e.dataRealizacao,e.periodo)}));salvar();}
+carregarExemplos();renderDashboard();atualizarBadges();
 </script>
-
 </body>
 </html>
